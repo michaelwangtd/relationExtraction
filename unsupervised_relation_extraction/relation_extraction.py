@@ -39,6 +39,14 @@ def namedEntityRecognize(sentence):
 
     return namedEntityTagTupleList,neTagList
 
+def getNamedEntityTypeDic():
+    neList = ['Nh','Ni','Ns']
+    dic = dict()
+    for i in range(len(neList)):
+        for j in range(len(neList)):
+            key = neList[i] + '_' + neList[j]
+            dic[key] = []
+    return dic
 
 
 if __name__ == '__main__':
@@ -50,10 +58,16 @@ if __name__ == '__main__':
     sentences = '\t'.join(sentences)#.decode('utf-8')
     sentenceList = sentences.split('\t')
     printList(sentenceList)
+
+    neTypeDic = getNamedEntityTypeDic()
+
     ## 2 提取命名实体
     for sentence in sentenceList:
         namedEntityTagTupleList,neTagList = namedEntityRecognize(sentence)
         printEscapeStr(namedEntityTagTupleList)
         printEscapeStr(neTagList)
+        ## 3 这里应该判断命名实体标签列表neTagList
+        ## 4 将同一类别的命名实体对划分为一类
+
         # break
 

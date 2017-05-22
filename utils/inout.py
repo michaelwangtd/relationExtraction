@@ -21,7 +21,7 @@ def getLTPPath(modelName):
     '''
 
     '''
-    return os.path.join(index.ROOTPATH,'ltkmodel','',modelName+'.model')
+    return os.path.join(index.ROOTPATH,'ltkmodel','ltp_data',modelName+'.model')
 
 def getDataOriginPath(fileName):
     '''
