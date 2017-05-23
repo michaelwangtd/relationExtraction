@@ -14,7 +14,8 @@ from collections import OrderedDict
 
 def namedEntityRecognize(sentence):
     '''
-        返回
+        使用pyltp模块进行命名实体识别
+        返回：1）命名实体和类别元组列表、2）实体类别列表
     '''
     namedEntityTagTupleList = []
 
@@ -39,7 +40,11 @@ def namedEntityRecognize(sentence):
 
     return namedEntityTagTupleList,neTagList
 
+
 def getNamedEntityTypeDic():
+    '''
+        获取命名实体类别字典
+    '''
     neList = ['Nh','Ni','Ns']
     dic = dict()
     for i in range(len(neList)):
@@ -49,9 +54,64 @@ def getNamedEntityTypeDic():
     return dic
 
 
+def divideEntityAndOtherWord(namedEntityTagTupleList):
+    '''
+        将列表中的命名实体和其他词分开
+    '''
+    namedEntityList = []
+    otherWordList = []
+    for tupleItem in namedEntityTagTupleList:
+        if tupleItem[1] in ['O']:
+            otherWordList.append(tupleItem[0])
+        elif tupleItem[1] not in ['O']:
+            namedEntityList.append(tupleItem)
+    # printEscapeStr(namedEntityList)
+    # printEscapeStr(otherWordList)
+    return namedEntityList,otherWordList
+
+
+def removeStopWord(otherWordList,stopWordList):
+    '''
+        去掉无意义词和标点符号
+    '''
+    featureWordList = []
+    if otherWordList:
+        for item in otherWordList:
+            if item not in stopWordList:
+                featureWordList.append(item)
+    return featureWordList
+
+
+def updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic):
+    '''
+
+    '''
+    namedEntityList = []
+    typeTag = []
+    for namedEntity in namedEntityAndTagList:
+        namedEntityList.append(namedEntity[0])
+        typeTag.append(namedEntity[1][-2:])
+    typeTagKey = '_'.join(typeTag)
+    if typeTagKey in neTypeDic.keys():
+        neTypeDic[typeTagKey].append([namedEntityList,featureWordList])
+
+
+def getFieldFeatureWordList(fieldClassifiedList):
+    fieldFeatureWordList = []
+    for item in fieldClassifiedList:
+        fieldFeatureWordList.extend(item[1])
+    return fieldFeatureWordList
+
+
+
 if __name__ == '__main__':
+
     corpusPath = inout.getDataOriginPath('special_corpus.txt')
     corpus = inout.onlyReadLine(corpusPath)
+
+    ## 加载停用词列表
+    stopWordPath = inout.getResourcePath('stopWordList.txt')
+    stopWordList = inout.readListFromTxt(stopWordPath)
 
     ## 1 对于复杂的文本数据要进行清洗
     sentences = SentenceSplitter.split(corpus)
@@ -61,13 +121,25 @@ if __name__ == '__main__':
 
     neTypeDic = getNamedEntityTypeDic()
 
-    ## 2 提取命名实体
     for sentence in sentenceList:
+        ## 2 提取命名实体
         namedEntityTagTupleList,neTagList = namedEntityRecognize(sentence)
-        printEscapeStr(namedEntityTagTupleList)
-        printEscapeStr(neTagList)
-        ## 3 这里应该判断命名实体标签列表neTagList
-        ## 4 将同一类别的命名实体对划分为一类
+        # printEscapeStr(namedEntityTagTupleList)
+        # printEscapeStr(neTagList)
+        ## 3 分割实体和其他词
+        namedEntityAndTagList,otherWordList = divideEntityAndOtherWord(namedEntityTagTupleList)
+        # printEscapeStr(namedEntityList)
+        ## 4 其他词去掉停用词
+        featureWordList = removeStopWord(otherWordList,stopWordList)
+        # printEscapeStr(featureWordList)
+        ## 5 将实体对和特征词添加进实体类型列表
+        updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic)
 
-        # break
+    ## 6 分领域分不同的实体标签类别处理数据
+    for tagTypeKey,fieldClassifiedList in neTypeDic.items():
+        if fieldClassifiedList:
+            ## 7 获取域类别下所有的特征词
+            fieldFeatureWordBagList = getFieldFeatureWordList(fieldClassifiedList)
+            printEscapeStr(fieldFeatureWordBagList)
+            ## 计算特征向量
 
