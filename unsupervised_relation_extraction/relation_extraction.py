@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from unsupervised_relation_extraction import persistent_relation_object
 
 
 def namedEntityRecognize(sentence):
@@ -24,7 +25,8 @@ def namedEntityRecognize(sentence):
     namedEntityTagTupleList = []
 
     segmentor = Segmentor()
-    segmentor.load(inout.getLTPPath(index.CWS))
+    # segmentor.load(inout.getLTPPath(index.CWS))
+    segmentor.load_with_lexicon(inout.getLTPPath(index.CWS),inout.getResourcePath('userDic.txt'))
     words = segmentor.segment(sentence)
     segmentor.release()
     postagger = Postagger()
@@ -69,9 +71,42 @@ def divideEntityAndOtherWord(namedEntityTagTupleList):
             otherWordList.append(tupleItem[0])
         elif tupleItem[1] not in ['O']:
             namedEntityList.append(tupleItem)
+    ## !!! 这里增加合并同一命名实体的功能
+    namedEntityList = mergeNamedEntity(namedEntityList)
+
     # printEscapeStr(namedEntityList)
     # printEscapeStr(otherWordList)
     return namedEntityList,otherWordList
+
+def mergeNamedEntity(namedEntityList):
+    '''
+
+    '''
+    unzipList = zip(*namedEntityList)
+    neWordList = unzipList[0]
+    indexList = unzipList[1]
+    finalNamedEntityList = []
+    for i in range(len(indexList)):
+        if 'B' in indexList[i]:
+            if i + 1 < len(indexList):
+                if 'I' in indexList[i + 1]:
+                    if i + 2 < len(indexList):
+                        if 'E' in indexList[i + 2]:
+                            ne = neWordList[i] + neWordList[i + 1] + neWordList[i + 2]
+                            # print ne
+                            type = 'S' + '-' +indexList[i].split('-')[-1]
+                            finalNamedEntityList.append((ne,type))
+            if i + 1 < len(indexList):
+                if 'E' in indexList[i + 1]:
+                    ne = neWordList[i] + neWordList[i + 1]
+                    # print ne
+                    type = 'S' + '-' + indexList[i].split('-')[-1]
+                    finalNamedEntityList.append((ne,type))
+        if 'S' in indexList[i]:
+            ne = neWordList[i]
+            # print ne
+            finalNamedEntityList.append((ne,indexList[i]))
+    return finalNamedEntityList
 
 
 def removeStopWord(otherWordList,stopWordList):
@@ -145,8 +180,10 @@ def createFieldFeatureValueList(fieldClassifiedList):
     documentNum = len(fieldClassifiedList)
     # 2 获取词文档频率统计列表documentFrequencyStatisticList
     documentFrequencyStatisticList = getWordDocumentFrequencyStatisticList(fieldClassifiedList)
+    # printEscapeStr(documentFrequencyStatisticList)
     # 3 获取特征值向量模板列表
     featureValueTemplateList = getFeatureValueTemplateList(documentFrequencyStatisticList)
+    # printEscapeStr(featureValueTemplateList)
     ## 计算特征值
     for i in range(len(fieldClassifiedList)):
         # 初始化特征值数组
@@ -154,6 +191,7 @@ def createFieldFeatureValueList(fieldClassifiedList):
         contextWordList = fieldClassifiedList[i][1]
         for j in range(len(featureValueTemplateList)):
             if featureValueTemplateList[j] in contextWordList:
+                # printEscapeStr(featureValueTemplateList[j])
                 # 计算tf-idf值
                 candidateWord = featureValueTemplateList[j]
                 featureValue = (1 + np.log(contextWordList.count(candidateWord))) * np.log(documentNum / documentFrequencyStatisticList.count(candidateWord))
@@ -163,7 +201,7 @@ def createFieldFeatureValueList(fieldClassifiedList):
         # 组装特征值索引映射字典
         featureValueIndexMapDic[str(list(featureValueVector))] = i
 
-    return fieldFeatureValueList,featureValueIndexMapDic
+    return fieldFeatureValueList,featureValueIndexMapDic,featureValueTemplateList
 
 
 def extractClusterData(fieldFeatureValueList):
@@ -208,6 +246,29 @@ def getNamedEntityPairClassifySetList(clusterList):
     return resultList
 
 
+def getNameEntityPairClusterSetList(clusterList):
+    '''
+
+    '''
+    resultList = []
+    dic = dict()
+
+    nePairNameList = []
+    tempList = []
+    for item in clusterList:
+        nePairNameList.append('_'.join(item[0]))
+        tempList.append(item[1])
+    nePairNameStr = '-'.join(nePairNameList)
+    dic[nePairNameStr] = tempList
+
+    for nePair,contextList in dic.items():
+        ## 这里可以对contextList进行筛选，暂时不进行筛选
+        # 获取context word set list
+        contextWordSetList = getContextWordSetList(contextList)
+        resultList.append([nePair,len(contextList),contextWordSetList])
+    return resultList
+
+
 
 
 def createNEPairClassifyDic(clusterDic):
@@ -224,8 +285,11 @@ def createNEPairClassifyDic(clusterDic):
         for clusterNum,clusterList in clusterDic.items():
             # 这里的clusterList是聚类的结果
             # 要加入判断去除命名实体对重复的逻辑
-            namedEntityPairClassifySetList = getNamedEntityPairClassifySetList(clusterList)
-            for item in namedEntityPairClassifySetList:
+            # namedEntityPairClassifySetList = getNamedEntityPairClassifySetList(clusterList)
+
+            namedEntityPairSetList = getNameEntityPairClusterSetList(clusterList)
+
+            for item in namedEntityPairSetList:
                 if item[0] not in nePairClassifyDic.keys():
                     nePairClassifyDic[item[0]] = [item[1],item[2]]
                     clusteredAllFeatureWordList.extend(item[2])
@@ -301,26 +365,49 @@ def calculateFeatureWordWeight(nePairClassifyDic,featureWordCCiWeightMap):
     return dic
 
 
+def candidateRelationWordMapping(featureWordList,relationDic):
+    '''
+        发现候选关系并进行关系映射，关系归一化处理
+    '''
+
+    for i in range(len(featureWordList)):
+        for key,valueList in relationDic.items():
+            if featureWordList[i] in valueList:
+                featureWordList[i] = key
+                break
+    return featureWordList
+
+
+
+
 
 
 if __name__ == '__main__':
 
-    pd.set_option('display.width', 300)
-    np.set_printoptions(linewidth=300, suppress=True)
-
-    corpusPath = inout.getDataOriginPath('special_corpus.txt')
-    corpus = inout.onlyReadLine(corpusPath)
-
     ## 加载停用词列表
     stopWordPath = inout.getResourcePath('stopWordList.txt')
     stopWordList = inout.readListFromTxt(stopWordPath)
+    ## 加载关系字典
+    relationDic = persistent_relation_object.getRelationShipDic()
+
+
+    pd.set_option('display.width', 300)
+    np.set_printoptions(linewidth=300, suppress=True)
+
+    # corpusPath = inout.getDataOriginPath('special_corpus_copy.txt')
+    corpusPath = inout.getDataOriginPath('special_corpus.txt')
+
 
     ## 1 对于复杂的文本数据要进行清洗
-    sentences = SentenceSplitter.split(corpus)
-    sentences = '\t'.join(sentences)#.decode('utf-8')
-    sentenceList = sentences.split('\t')
-    printList(sentenceList)
-
+    # 分句可以用在初次清晰文本过程中
+    # corpus = inout.onlyReadLine(corpusPath)
+    # sentences = SentenceSplitter.split(corpus)
+    # sentences = '\t'.join(sentences)#.decode('utf-8')
+    # sentenceList = sentences.split('\t')
+    # 直接从文本读取list数据
+    sentenceList = inout.readListFromTxt(corpusPath)
+    printEscapeStr(sentenceList)
+    # exit(0)
     # 命名实体类别字典
     neTypeDic = getNamedEntityTypeDic()
 
@@ -329,15 +416,19 @@ if __name__ == '__main__':
         namedEntityTagTupleList,neTagList = namedEntityRecognize(sentence)
         # printEscapeStr(namedEntityTagTupleList)
         # printEscapeStr(neTagList)
-        ## 3 分割实体和其他词
+        # ## 3 分割实体和其他词
         namedEntityAndTagList,otherWordList = divideEntityAndOtherWord(namedEntityTagTupleList)
-        # printEscapeStr(namedEntityList)
+        # printEscapeStr(namedEntityAndTagList)
+        # printEscapeStr(otherWordList)
+        # # exit(0)
         ## 4 其他词去掉停用词
         featureWordList = removeStopWord(otherWordList,stopWordList)
         # printEscapeStr(featureWordList)
+        ## 4.5 候选关系词进行映射
+        featureWordList = candidateRelationWordMapping(featureWordList,relationDic)
         ## 5 将实体对和特征词添加进实体类型列表
         updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic)
-
+    # exit(0)
     # 聚类之后再分类的结果暂时存储在list中[dict1(),dict2()]
     clusterResultListAll = []
 
@@ -345,21 +436,24 @@ if __name__ == '__main__':
     # print len(neTypeDic)
     for tagTypeKey,fieldClassifiedList in neTypeDic.items():
         if fieldClassifiedList:
-            printEscapeStr(fieldClassifiedList)
+            # for item in fieldClassifiedList:
+                # printEscapeStr(item)
             ## 7 生成域分类特征向量列表 和 特征值，索引映射字典
-            fieldFeatureValueList, featureValueIndexMapDic = createFieldFeatureValueList(fieldClassifiedList)
+            fieldFeatureValueList, featureValueIndexMapDic,featureValueTemplateList = createFieldFeatureValueList(fieldClassifiedList)
             # printEscapeStr(fieldFeatureValueList)
             # printEscapeStr(featureValueIndexMapDic)
+            # printEscapeStr(featureValueTemplateList)
             ## 聚类
             ## 8 准备聚类数据
             clusterTrainData = extractClusterData(fieldFeatureValueList)
+            # print clusterTrainData
             ## 9 cluster
-            n_clusters = 2
-            random_state = 170
+            n_clusters = 3
+            random_state = 100
             y_hat = KMeans(n_clusters=n_clusters,random_state=random_state).fit_predict(clusterTrainData)
             # print type(y_hat)
             # print y_hat.shape
-            # print y_hat
+            print y_hat
             typeDic = dict()
             typeDic[tagTypeKey] = dict()
             ## 10 聚类结果进行分类

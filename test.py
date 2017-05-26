@@ -2,10 +2,42 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
+from utils.inout import printEscapeStr
 
 
-print np.sqrt(9)
-print type(np.sqrt(9))
+testList = [('王','B-Nh'),('宝强','E-Nh'),('马蓉','S-Nh')]
+result = zip(*testList)
+printEscapeStr(result)
+print type(result)
+neList = result[0]
+indexList = result[1]
+cIndexList = []
+namedEntityList = []
+for i in range(len(indexList)):
+    if 'B' in indexList[i]:
+        if i+1 < len(indexList):
+            if 'I' in indexList[i+1]:
+                if i+2 < len(indexList):
+                    if 'E' in indexList[i+2]:
+                        ne = neList[i]+neList[i+1]+neList[i+2]
+                        print ne
+                        namedEntityList.append(ne)
+        if i+1 < len(indexList):
+            if 'E' in indexList[i+1]:
+                ne = neList[i] + neList[i+1]
+                print ne
+                namedEntityList.append(ne)
+    if 'S' in indexList[i]:
+        ne = neList[i]
+        print ne
+        namedEntityList.append(ne)
+printEscapeStr(namedEntityList)
+
+
+
+
+# print np.sqrt(9)
+# print type(np.sqrt(9))
 
 
 # print np.square(3)

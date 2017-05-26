@@ -26,7 +26,8 @@ if __name__ == '__main__':
         namedEntityTagTupleList = []
 
         segmentor = Segmentor()
-        segmentor.load(inout.getLTPPath(index.CWS))
+        # segmentor.load(inout.getLTPPath(index.CWS))
+        segmentor.load_with_lexicon(inout.getLTPPath(index.CWS), inout.getResourcePath('userDic.txt'))
         words = segmentor.segment(testLine)
         segmentor.release()
         postagger = Postagger()

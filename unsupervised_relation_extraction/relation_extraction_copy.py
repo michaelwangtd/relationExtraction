@@ -342,7 +342,7 @@ if __name__ == '__main__':
     pd.set_option('display.width', 300)
     np.set_printoptions(linewidth=300, suppress=True)
 
-    corpusPath = inout.getDataOriginPath('special_corpus.txt')
+    corpusPath = inout.getDataOriginPath('special_corpus_copy.txt')
     corpus = inout.onlyReadLine(corpusPath)
 
     ## 加载停用词列表
