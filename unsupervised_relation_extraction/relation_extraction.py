@@ -446,9 +446,9 @@ if __name__ == '__main__':
             ## 聚类
             ## 8 准备聚类数据
             clusterTrainData = extractClusterData(fieldFeatureValueList)
-            # print clusterTrainData
+            print clusterTrainData
             ## 9 cluster
-            n_clusters = 3
+            n_clusters = 4
             random_state = 100
             y_hat = KMeans(n_clusters=n_clusters,random_state=random_state).fit_predict(clusterTrainData)
             # print type(y_hat)
