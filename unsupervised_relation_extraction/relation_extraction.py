@@ -423,12 +423,13 @@ if __name__ == '__main__':
         # # exit(0)
         ## 4 其他词去掉停用词
         featureWordList = removeStopWord(otherWordList,stopWordList)
-        # printEscapeStr(featureWordList)
+        printEscapeStr(featureWordList)
         ## 4.5 候选关系词进行映射
         featureWordList = candidateRelationWordMapping(featureWordList,relationDic)
+        printEscapeStr(featureWordList)
         ## 5 将实体对和特征词添加进实体类型列表
         updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic)
-    # exit(0)
+    exit(0)
     # 聚类之后再分类的结果暂时存储在list中[dict1(),dict2()]
     clusterResultListAll = []
 
