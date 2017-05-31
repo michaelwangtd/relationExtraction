@@ -121,7 +121,7 @@ def removeStopWord(otherWordList,stopWordList):
     return featureWordList
 
 
-def updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic):
+def updateNeTypeDic(namedEntityAndTagList,featureWordList,originSentenceI,neTypeDic):
     '''
 
     '''
@@ -132,7 +132,7 @@ def updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic):
         typeTag.append(namedEntity[1][-2:])
     typeTagKey = '_'.join(typeTag)
     if typeTagKey in neTypeDic.keys():
-        neTypeDic[typeTagKey].append([namedEntityList,featureWordList])
+        neTypeDic[typeTagKey].append([originSentenceI,namedEntityList,featureWordList])
 
 
 def getFieldFeatureWordList(fieldClassifiedList):
@@ -151,7 +151,7 @@ def getWordDocumentFrequencyStatisticList(fieldClassifiedList):
     '''
     resultList = []
     for itemList in fieldClassifiedList:
-        resultList.extend(set(itemList[1]))
+        resultList.extend(set(itemList[2]))
     return resultList
 
 
@@ -188,7 +188,7 @@ def createFieldFeatureValueList(fieldClassifiedList):
     for i in range(len(fieldClassifiedList)):
         # 初始化特征值数组
         featureValueVector = np.zeros((len(featureValueTemplateList)))
-        contextWordList = fieldClassifiedList[i][1]
+        contextWordList = fieldClassifiedList[i][2]
         for j in range(len(featureValueTemplateList)):
             if featureValueTemplateList[j] in contextWordList:
                 # printEscapeStr(featureValueTemplateList[j])
@@ -197,7 +197,7 @@ def createFieldFeatureValueList(fieldClassifiedList):
                 featureValue = (1 + np.log(contextWordList.count(candidateWord))) * np.log(documentNum / documentFrequencyStatisticList.count(candidateWord))
                 featureValueVector[j] = featureValue
         # 组装领域特征值列表
-        fieldFeatureValueList.append([fieldClassifiedList[i][0],featureValueVector])
+        fieldFeatureValueList.append([fieldClassifiedList[i][1],featureValueVector])
         # 组装特征值索引映射字典
         featureValueIndexMapDic[str(list(featureValueVector))] = i
 
@@ -256,9 +256,10 @@ def getNameEntityPairClusterSetList(clusterList):
     nePairNameList = []
     tempList = []
     for item in clusterList:
-        nePairNameList.append('_'.join(item[0]))
-        tempList.append(item[1])
-    nePairNameStr = '-'.join(nePairNameList)
+        nePairNameList.append('_'.join(item[1]) + '|' + str(item[0]))
+        tempList.append(item[2])
+    nePairNameList = list(set(nePairNameList))
+    nePairNameStr = '    '.join(nePairNameList)
     dic[nePairNameStr] = tempList
 
     for nePair,contextList in dic.items():
@@ -282,13 +283,15 @@ def createNEPairClassifyDic(clusterDic):
     clusteredAllFeatureWordList = []
     nePairClassifyDic = dict()
     if clusterDic:
+        # printEscapeStr(clusterDic)
         for clusterNum,clusterList in clusterDic.items():
             # 这里的clusterList是聚类的结果
             # 要加入判断去除命名实体对重复的逻辑
             # namedEntityPairClassifySetList = getNamedEntityPairClassifySetList(clusterList)
 
             namedEntityPairSetList = getNameEntityPairClusterSetList(clusterList)
-
+            # print '------------------'
+            # printEscapeStr(namedEntityPairSetList)
             for item in namedEntityPairSetList:
                 if item[0] not in nePairClassifyDic.keys():
                     nePairClassifyDic[item[0]] = [item[1],item[2]]
@@ -301,7 +304,7 @@ def getWCik(featureWord,relatedList):
     '''
         根据特征词featureWord，计算WCik的权重值
     '''
-    countFik = relatedList[-1].count(featureWord)
+    countFik = relatedList[1].count(featureWord)
     WCik = np.log2(countFik + 1) / np.log2(relatedList[0] + 1)
     return WCik
 
@@ -322,7 +325,7 @@ def getFeatureWordCCiWeightMap(nePairClassifyDic,clusteredAllFeatureWordSetList)
         # Sum WCik 权重的总数
         SumWCik = 0.0
         for nePair,relatedList in nePairClassifyDic.items():
-            if featureWord in relatedList[-1]:
+            if featureWord in relatedList[1]:
                 # 获取WCik权重
                 tempWCik = getWCik(featureWord,relatedList)
                 if tempWCik > maxWCik:
@@ -353,7 +356,7 @@ def calculateFeatureWordWeight(nePairClassifyDic,featureWordCCiWeightMap):
     for nePair,relatedList in nePairClassifyDic.items():
         if nePair not in dic.keys():
             featureWordWeightList = []
-            for featureWord in relatedList[-1]:
+            for featureWord in relatedList[1]:
                 tempWCik = getWCik(featureWord,relatedList)
                 # 计算最终权重
                 Wik = getWik(tempWCik,featureWordCCiWeightMap[featureWord])
@@ -376,10 +379,6 @@ def candidateRelationWordMapping(featureWordList,relationDic):
                 featureWordList[i] = key
                 break
     return featureWordList
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -411,25 +410,27 @@ if __name__ == '__main__':
     # 命名实体类别字典
     neTypeDic = getNamedEntityTypeDic()
 
-    for sentence in sentenceList:
+    for originSentenceI in range(len(sentenceList)):
         ## 2 提取命名实体
-        namedEntityTagTupleList,neTagList = namedEntityRecognize(sentence)
+        namedEntityTagTupleList,neTagList = namedEntityRecognize(sentenceList[originSentenceI])
         # printEscapeStr(namedEntityTagTupleList)
         # printEscapeStr(neTagList)
+        # exit(0)
         # ## 3 分割实体和其他词
         namedEntityAndTagList,otherWordList = divideEntityAndOtherWord(namedEntityTagTupleList)
         # printEscapeStr(namedEntityAndTagList)
         # printEscapeStr(otherWordList)
-        # # exit(0)
+        # exit(0)
         ## 4 其他词去掉停用词
         featureWordList = removeStopWord(otherWordList,stopWordList)
-        printEscapeStr(featureWordList)
+        # printEscapeStr(featureWordList)
         ## 4.5 候选关系词进行映射
         featureWordList = candidateRelationWordMapping(featureWordList,relationDic)
-        printEscapeStr(featureWordList)
+        # printEscapeStr(featureWordList)
         ## 5 将实体对和特征词添加进实体类型列表
-        updateNeTypeDic(namedEntityAndTagList,featureWordList,neTypeDic)
-    exit(0)
+        updateNeTypeDic(namedEntityAndTagList,featureWordList,originSentenceI,neTypeDic)
+    # printEscapeStr(neTypeDic['Nh_Nh'])
+    # exit(0)
     # 聚类之后再分类的结果暂时存储在list中[dict1(),dict2()]
     clusterResultListAll = []
 
@@ -437,20 +438,23 @@ if __name__ == '__main__':
     # print len(neTypeDic)
     for tagTypeKey,fieldClassifiedList in neTypeDic.items():
         if fieldClassifiedList:
+            printEscapeStr(fieldClassifiedList)
             # for item in fieldClassifiedList:
                 # printEscapeStr(item)
+            # exit(0)
             ## 7 生成域分类特征向量列表 和 特征值，索引映射字典
             fieldFeatureValueList, featureValueIndexMapDic,featureValueTemplateList = createFieldFeatureValueList(fieldClassifiedList)
             # printEscapeStr(fieldFeatureValueList)
             # printEscapeStr(featureValueIndexMapDic)
             # printEscapeStr(featureValueTemplateList)
+            # exit(0)
             ## 聚类
             ## 8 准备聚类数据
             clusterTrainData = extractClusterData(fieldFeatureValueList)
-            print clusterTrainData
+            # print clusterTrainData
             ## 9 cluster
-            n_clusters = 4
-            random_state = 100
+            n_clusters = 7
+            random_state = 90
             y_hat = KMeans(n_clusters=n_clusters,random_state=random_state).fit_predict(clusterTrainData)
             # print type(y_hat)
             # print y_hat.shape
@@ -479,8 +483,13 @@ if __name__ == '__main__':
         clusterDic = typeDic[nePairType]    # [[['王祖蓝', '王茂'], ['二十', '年', '前', '小名']], [['王祖蓝', '王茂'], ['小名', '变']]]
         ## 这里因为数据量少，没有出现同一个已经聚类的类别中出现不同命名实体对的情况
         ## 后面更换数据后，可以在进行下面的数据整理操作时添加：将同一聚类类别中不同命名实体对分开的操作
+        # print 'clusterDic:'
+        # printEscapeStr(clusterDic)
+        # exit(0)
         ## 12 整理clusterDic字典，将clusterDic转换为nePairClassifyDic命名实体对分类字典
         nePairClassifyDic,clusteredAllFeatureWordSetList = createNEPairClassifyDic(clusterDic)
+        # printEscapeStr(nePairClassifyDic)
+        # exit(0)
         # print len(nePairClassifyDic)
         # for k,v in nePairClassifyDic.items():
         #     print k
@@ -492,10 +501,36 @@ if __name__ == '__main__':
         featureWordCCiWeightMap = getFeatureWordCCiWeightMap(nePairClassifyDic,clusteredAllFeatureWordSetList)
         ## 14 计算命名实体对分类字典中各个特征词的权重
         labelWordWeightDic = calculateFeatureWordWeight(nePairClassifyDic,featureWordCCiWeightMap)
+        # printEscapeStr(labelWordWeightDic)
 
-        for k,v in labelWordWeightDic.items():
-            print k
-            printEscapeStr(v)
+
+        relationList = relationDic.keys()
+        for nePairStr,labelWordWeightList in labelWordWeightDic.items():
+            outputLine = ''
+            # 处理 key
+            outputSentenceList = []
+            nePairList = []
+            nePairStrList = nePairStr.split('    ')
+            for item in nePairStrList:
+                outputSentenceList.append(sentenceList[int(item.split('|')[1])])
+                if item.split('|')[0] not in nePairList:
+                    nePairList.append(item.split('|')[0])
+            # 处理 value
+            targetLabelWordList = []
+            for item in labelWordWeightList:
+                if item[0] in relationList:
+                   targetLabelWordList.append(item[0])
+
+            if not targetLabelWordList:
+                targetLabelWordStr = 'Null'
+            else:
+                targetLabelWordStr = ' >> '.join(targetLabelWordList)
+            outputLine = '---------------\n' + '聚类内个数：' + str(len(outputSentenceList)) + '\n' + '\n'.join(outputSentenceList) + '\n' + '    '.join(nePairList) + '\n' + '候选关系：' + targetLabelWordStr
+
+            print outputLine
+            printEscapeStr(labelWordWeightList)
+
+
 
 
 
