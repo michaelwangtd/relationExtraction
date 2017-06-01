@@ -3,11 +3,39 @@
 
 import numpy as np
 from utils.inout import printEscapeStr
+from utils import inout
+
+path = inout.getDataTestPath('origin_corpus_test.txt')
+info = inout.readListFromTxt(path)
+for item in info:
+    lineList = item.strip().split(' ')
+    printEscapeStr(lineList)
+    for it in lineList:
+        if '_' in it:
+            if len(it.split('_')) == 2:
+                splitList = it.split('_')
+                print type(splitList[0])
+                print splitList[0]
+                if not splitList[0] == '':
+                    print 'yes'
+                print '|||||'
+                exit(0)
 
 
-testt = '_w   _w 组建_v 省_k 港口_x 集团_n  _w '
-testList = testt.strip().split('  ')
-printEscapeStr(testList)
+
+
+
+
+
+
+
+# if testList[0] != '' and testList[1] != '':
+#     printEscapeStr(testList)
+
+
+# testt = '_w   _w 组建_v 省_k 港口_x 集团_n  _w '
+# testList = testt.strip().split('  ')
+# printEscapeStr(testList)
 
 
 # testList = [('王','B-Nh'),('宝强','E-Nh'),('马蓉','S-Nh')]

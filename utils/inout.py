@@ -29,6 +29,12 @@ def getDataOriginPath(fileName):
     '''
     return os.path.join(index.ROOTPATH,index.DATA,index.ORIGIN,fileName)
 
+def getDataTestPath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.TEST,fileName)
+
 
 def getResourcePath(fileName):
     '''
