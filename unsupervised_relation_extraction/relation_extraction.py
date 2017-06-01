@@ -121,6 +121,22 @@ def removeStopWord(otherWordList,stopWordList):
     return featureWordList
 
 
+def removeOneLengthWord(featureWordList):
+    '''
+        特征词进行筛选，去除一个字的词
+    '''
+    resultList = []
+    for item in featureWordList:
+        item = item.decode('utf-8')
+        # print type(item)
+        # print len(item)
+        if len(item) > 1:
+            if not item.isdigit():
+                item = item.encode('utf-8')
+                resultList.append(item)
+    return resultList
+
+
 def updateNeTypeDic(namedEntityAndTagList,featureWordList,originSentenceI,neTypeDic):
     '''
 
@@ -386,6 +402,9 @@ if __name__ == '__main__':
     ## 加载停用词列表
     stopWordPath = inout.getResourcePath('stopWordList.txt')
     stopWordList = inout.readListFromTxt(stopWordPath)
+    # 这地方加入临时逻辑，后面可以进行停用词合并
+    stopWordList = list(set(stopWordList))
+
     ## 加载关系字典
     relationDic = persistent_relation_object.getRelationShipDic()
 
@@ -424,6 +443,10 @@ if __name__ == '__main__':
         ## 4 其他词去掉停用词
         featureWordList = removeStopWord(otherWordList,stopWordList)
         # printEscapeStr(featureWordList)
+        # exit(0)
+        ## 4.1 去掉特征词中的一个字的词和数字
+        featureWordList = removeOneLengthWord(featureWordList)
+        # printEscapeStr(featureWordList)
         ## 4.5 候选关系词进行映射
         featureWordList = candidateRelationWordMapping(featureWordList,relationDic)
         # printEscapeStr(featureWordList)
@@ -436,8 +459,10 @@ if __name__ == '__main__':
 
     ## 6 分领域分不同的实体标签类别处理数据
     # print len(neTypeDic)
+
     for tagTypeKey,fieldClassifiedList in neTypeDic.items():
         if fieldClassifiedList:
+            print '当前只有这一个类别：',tagTypeKey,
             printEscapeStr(fieldClassifiedList)
             # for item in fieldClassifiedList:
                 # printEscapeStr(item)
@@ -452,13 +477,28 @@ if __name__ == '__main__':
             ## 8 准备聚类数据
             clusterTrainData = extractClusterData(fieldFeatureValueList)
             # print clusterTrainData
+            # print clusterTrainData.shape
+
+            # exit(0)
             ## 9 cluster
-            n_clusters = 7
-            random_state = 90
-            y_hat = KMeans(n_clusters=n_clusters,random_state=random_state).fit_predict(clusterTrainData)
+            n_clusters = 15
+            random_state = 200
+
+            # y_hat = KMeans(n_clusters=n_clusters,random_state=random_state).fit_predict(clusterTrainData)
             # print type(y_hat)
             # print y_hat.shape
-            print y_hat
+
+            model = KMeans(n_clusters=n_clusters)
+            clustered = model.fit(clusterTrainData)
+
+            print '聚类中心个数：', len(clustered.cluster_centers_)
+            # print clustered.cluster_centers_
+            print '样本点到所属簇中心距离之和（数值越小越说明聚类中心点越准确）：', clustered.inertia_
+            y_hat = clustered.labels_
+            print '样本所属类标记：',len(y_hat),y_hat
+
+
+
             typeDic = dict()
             typeDic[tagTypeKey] = dict()
             ## 10 聚类结果进行分类
