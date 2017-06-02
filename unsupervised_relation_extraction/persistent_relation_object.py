@@ -17,7 +17,7 @@ def getRelationShipDic():
 
     infoList = inout.readListFromTxt(asymmetricInFilePath)
     infoList.extend(inout.readListFromTxt(symmetricInFilePath))
-    print len(infoList)
+    print '归一化总关系数量：',len(infoList)
 
     # 初始化持久化对象字典
     initDic = dict()

@@ -7,6 +7,7 @@ import codecs
 import xlwt
 import json
 import index
+import pickle
 
 """
     获取路径相关
@@ -29,6 +30,14 @@ def getDataOriginPath(fileName):
     '''
     return os.path.join(index.ROOTPATH,index.DATA,index.ORIGIN,fileName)
 
+
+def getDataAnalysisPath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.ANALYSIS,fileName)
+
+
 def getDataTestPath(fileName):
     '''
          获取data目录文件路径
@@ -45,8 +54,28 @@ def getResourcePath(fileName):
 
 
 """
-    文件输入相关
+    文件输入/输出相关
 """
+
+def writePersistObject(filePath,cake):
+    '''
+        写出持久化的对象
+    '''
+    fw = open(filePath,'wb')
+    pickle.dump(cake,fw)
+    fw.close()
+
+
+def readPersistObject(filePath):
+    '''
+        读入持久化的对象
+    '''
+    fr = open(filePath,'rb')
+    cake = pickle.load(fr)
+    return cake,type(cake)
+
+
+
 def writeContent2Excel(infoList,outputFilePath):
     """
         “覆盖”的方式写入数据
@@ -143,6 +172,9 @@ def writeList2Txt(filePath,infoList):
         f.close()
 
 
+"""
+    控制台打印相关
+"""
 def printList(outList):
     '''
 

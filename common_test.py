@@ -5,21 +5,55 @@ import numpy as np
 from utils.inout import printEscapeStr
 from utils import inout
 
-path = inout.getDataTestPath('origin_corpus_test.txt')
-info = inout.readListFromTxt(path)
-for item in info:
-    lineList = item.strip().split(' ')
-    printEscapeStr(lineList)
-    for it in lineList:
-        if '_' in it:
-            if len(it.split('_')) == 2:
-                splitList = it.split('_')
-                print type(splitList[0])
-                print splitList[0]
-                if not splitList[0] == '':
-                    print 'yes'
-                print '|||||'
-                exit(0)
+
+
+# testList = [('潘世明','S-Nh')]
+#
+# unzipList = zip(*testList)
+# printEscapeStr(unzipList)
+# neWordList = unzipList[0]
+# indexList = unzipList[1]
+#
+# printEscapeStr(neWordList)
+# printEscapeStr(indexList)
+
+
+# sentencePath = inout.getDataOriginPath('sentence_list_corpus.pkl')
+# sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus.pkl')
+#
+#
+# sentenceList,senType = inout.readPersistObject(sentencePath)
+# print len(sentenceList)
+# for item in sentenceList:
+#     print item
+
+# sentenceFeatureList,sfType = inout.readPersistObject(sentenceFeaturePath)
+# print len(sentenceFeatureList)
+# print sfType
+# for item in sentenceFeatureList:
+#     printEscapeStr(item)
+
+
+
+# testList = ['1','2','3']
+# printEscapeStr(testList[0:1])
+
+
+# path = inout.getDataTestPath('origin_corpus_test.txt')
+# info = inout.readListFromTxt(path)
+# for item in info:
+#     lineList = item.strip().split(' ')
+#     printEscapeStr(lineList)
+#     for it in lineList:
+#         if '_' in it:
+#             if len(it.split('_')) == 2:
+#                 splitList = it.split('_')
+#                 print type(splitList[0])
+#                 print splitList[0]
+#                 if not splitList[0] == '':
+#                     print 'yes'
+#                 print '|||||'
+#                 exit(0)
 
 
 

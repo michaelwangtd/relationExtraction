@@ -11,6 +11,7 @@ ROOTPATH = os.path.dirname(__file__)
 DATA = 'data'
 ORIGIN = 'origin'
 TEST = 'test'
+ANALYSIS = 'analysis'
 
 RESOURCE = 'resource'
 

@@ -16,6 +16,15 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from unsupervised_relation_extraction import persistent_relation_object
 
+"""
+    记录版本情况：
+    1）算法本身正常运行
+    2）算法迭代到当前版本，以后对算法的改进不再在这一版本上改进
+    3）这一版本的下一代版本将设计成模块化的形式，将数据处理部分拆分成其他模块，而算法部分拆分成一个独立的模块
+    4）以后对算法的改进将在独立模块上进行迭代
+    5）所有的数据前期处理成相同的形式
+"""
+
 
 def namedEntityRecognize(sentence):
     '''
@@ -77,6 +86,7 @@ def divideEntityAndOtherWord(namedEntityTagTupleList):
     # printEscapeStr(namedEntityList)
     # printEscapeStr(otherWordList)
     return namedEntityList,otherWordList
+
 
 def mergeNamedEntity(namedEntityList):
     '''
@@ -397,7 +407,20 @@ def candidateRelationWordMapping(featureWordList,relationDic):
     return featureWordList
 
 
+def getLabelWeightOutputStr(labelWordWeightList):
+    '''
+
+    '''
+    resultStr = ''
+    for item in labelWordWeightList:
+        resultStr = resultStr + '(' + str(item[0]) + ',' + str(item[1]) + ')' + ','
+    return resultStr
+
+
 if __name__ == '__main__':
+
+    analysisPath = inout.getDataAnalysisPath('analysis.txt')
+
 
     ## 加载停用词列表
     stopWordPath = inout.getResourcePath('stopWordList.txt')
@@ -516,6 +539,9 @@ if __name__ == '__main__':
     # exit(0)
     ## 11 识别可鉴别词，对实体对标记关系，这里计算准则依据DCM方案（Discriminative Category Matching）
     # print 'clusterResultListAll len: ',len(clusterResultListAll)
+
+    fw = open(analysisPath, 'wb')
+
     for typeDic in clusterResultListAll:
         # 命名实体对类别
         nePairType = typeDic.keys()[0]
@@ -565,11 +591,19 @@ if __name__ == '__main__':
                 targetLabelWordStr = 'Null'
             else:
                 targetLabelWordStr = ' >> '.join(targetLabelWordList)
-            outputLine = '---------------\n' + '聚类内个数：' + str(len(outputSentenceList)) + '\n' + '\n'.join(outputSentenceList) + '\n' + '    '.join(nePairList) + '\n' + '候选关系：' + targetLabelWordStr
 
-            print outputLine
-            printEscapeStr(labelWordWeightList)
+            outputLine = '---------------\n' + '聚类内个数：' + str(len(outputSentenceList)) + '\n' + '\n'.join(outputSentenceList) +\
+                         '\n' + '    '.join(nePairList) + '\n' + '候选关系：' + targetLabelWordStr
 
+            # 处理labelWeightList
+            labelWordWeightStr = getLabelWeightOutputStr(labelWordWeightList)
+
+            outputLine = outputLine + '\n' + labelWordWeightStr
+
+            # print outputLine
+            # printEscapeStr(labelWordWeightList)
+            fw.write(outputLine + '\n')
+    fw.close()
 
 
 
