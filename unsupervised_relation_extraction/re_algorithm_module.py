@@ -428,11 +428,12 @@ def getLabelWeightOutputStr(labelWordWeightList):
 if __name__ == '__main__':
 
     ## 输入参数
-    n_cluster = 250
+    n_cluster = 300
+    # n_cluster = 15000
 
-    corpusNum = 200
+    corpusNum = 500
 
-    analysisPath = inout.getDataAnalysisPath('analysis.txt')
+    analysisPath = inout.getDataAnalysisPath('analysis_cluster_sentence.txt')
 
     ## 配置
     pd.set_option('display.width', 300)
@@ -448,15 +449,15 @@ if __name__ == '__main__':
     relationDic = persistent_relation_object.getRelationShipDic()
 
     ## 作为模块的入口，加载对象
-    sentencePath = inout.getDataOriginPath('sentence_list_corpus.pkl')
-    sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus.pkl')
+    sentencePath = inout.getDataOriginPath('sentence_list_corpus_complete_sentence.pkl')
+    sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
     sentenceList,slType = inout.readPersistObject(sentencePath)
     sentenceFeatureList,sflType = inout.readPersistObject(sentenceFeaturePath)
 
     ## 这里对语料个数进行控制
-    # sentenceList = sentenceList[:corpusNum]
-    # sentenceFeatureList = sentenceFeatureList[:corpusNum]
+    sentenceList = sentenceList[:corpusNum]
+    sentenceFeatureList = sentenceFeatureList[:corpusNum]
 
     # exit(0)
 

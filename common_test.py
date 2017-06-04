@@ -5,6 +5,27 @@ import numpy as np
 from utils.inout import printEscapeStr
 from utils import inout
 
+testList = ['a','b']
+for i in range(len(testList)-1,-1,-1):
+    print testList[i]
+
+
+# testList = [('张杨', 'S-Nh'), ('郭亮', 'S-Nh')]
+# re = zip(*testList)
+# printEscapeStr(re)
+# final = ' '.join(re[0])
+# print final
+
+
+# testList = []
+# if testList:
+#     print 'y'
+
+
+# testWord = ''
+# if testWord:
+#     print 'y'
+
 
 
 # testList = [('潘世明','S-Nh')]

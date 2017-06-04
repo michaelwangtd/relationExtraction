@@ -78,7 +78,7 @@ def divideEntityAndOtherWord(namedEntityTagTupleList):
             otherWordList.append(tupleItem[0])
     ## !!! 这里增加合并同一命名实体的功能
     if namedEntityList:
-        printEscapeStr(namedEntityList)
+        # printEscapeStr(namedEntityList)
         namedEntityList = mergeNamedEntity(namedEntityList)
 
     # printEscapeStr(namedEntityList)
@@ -127,11 +127,13 @@ if __name__ == '__main__':
     # 加入从文本中过滤句子的逻辑
     infoList = getSentenceList(infoList)
     print '原始总的句子个数： ',len(infoList)
+    # exit(0)
 
     # 初始化两个同步的列表
     sentenceList = []
     sentenceFeatureList = []
 
+    i = 0
     ## 命名实体识别
     for sentence in infoList:
 
@@ -143,8 +145,10 @@ if __name__ == '__main__':
         # printEscapeStr(otherWordList)
 
         if len(namedEntityAndTagList) == 2:
+            i = i + 1
             sentenceFeatureList.append([namedEntityAndTagList,otherWordList])
             sentenceList.append(sentence)
+            printEscapeStr(namedEntityAndTagList)
 
     # 这里要持久化两个对象：sentenceList、sentenceFeatureList
     sentencePath = inout.getDataOriginPath('sentence_list_corpus_complete_sentence.pkl')
@@ -153,6 +157,7 @@ if __name__ == '__main__':
     inout.writePersistObject(sentencePath, sentenceList)
     inout.writePersistObject(sentenceFeaturePath, sentenceFeatureList)
     print '持久化完成...'
+    print '筛选的句子数量： ',i
 
 
 
