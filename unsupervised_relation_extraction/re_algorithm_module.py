@@ -449,8 +449,8 @@ if __name__ == '__main__':
     relationDic = persistent_relation_object.getRelationShipDic()
 
     ## 作为模块的入口，加载对象
-    sentencePath = inout.getDataOriginPath('sentence_list_corpus_complete_sentence.pkl')
-    sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus_complete_sentence.pkl')
+    sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+    sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
     sentenceList,slType = inout.readPersistObject(sentencePath)
     sentenceFeatureList,sflType = inout.readPersistObject(sentenceFeaturePath)

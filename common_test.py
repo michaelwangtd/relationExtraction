@@ -5,9 +5,23 @@ import numpy as np
 from utils.inout import printEscapeStr
 from utils import inout
 
-testList = ['a','b']
-for i in range(len(testList)-1,-1,-1):
-    print testList[i]
+
+sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+
+sentenceList, slType = inout.readPersistObject(sentencePath)
+print len(sentenceList)
+
+
+
+# testList = [('刘霆', 'S-Nh'), ('刘霆', 'S-Nh')]
+# if testList[0] == testList[1]:
+#     print 'y'
+
+
+
+# testList = ['a','b']
+# for i in range(len(testList)-1,-1,-1):
+#     print testList[i]
 
 
 # testList = [('张杨', 'S-Nh'), ('郭亮', 'S-Nh')]

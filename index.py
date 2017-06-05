@@ -12,6 +12,7 @@ DATA = 'data'
 ORIGIN = 'origin'
 TEST = 'test'
 ANALYSIS = 'analysis'
+PKL = 'pkl'
 
 RESOURCE = 'resource'
 

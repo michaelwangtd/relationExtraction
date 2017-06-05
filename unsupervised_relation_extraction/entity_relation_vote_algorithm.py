@@ -6,6 +6,7 @@ import numpy as np
 from utils import inout
 from utils.inout import printEscapeStr
 import persistent_relation_object
+from collections import OrderedDict
 
 
 def removeStopWord(otherWordList,stopWordList):
@@ -159,12 +160,69 @@ def getSentenceOutputStr(sentenceIndexList,sentenceList):
     return resultStr
 
 
+def isSameNamedEntity(namedEntityAndTagList):
+    '''
+
+    '''
+    if len(namedEntityAndTagList) == 2:
+        if namedEntityAndTagList[0] == namedEntityAndTagList[1]:
+            return True
+    return False
+
+
+def distinct(sentenceList,sentenceFeatureList):
+    '''
+        列表元素去除重复
+    '''
+    resultSenList = []
+    resultSenFeaList = []
+    for i in range(len(sentenceList)):
+        if not sentenceList[i] in resultSenList:
+            resultSenList.append(sentenceList[i])
+        if not sentenceFeatureList[i] in resultSenFeaList:
+            resultSenFeaList.append(sentenceFeatureList[i])
+    return resultSenList,resultSenFeaList
+
+
+def listlist2list(listlist):
+    '''
+        [[a,b],[c],[d]] ----> [a,b,c,d]
+    '''
+    resultList = []
+    for itemList in listlist:
+        resultList.extend(itemList)
+    return resultList
+
+
+def convert2SortedDic(initDic):
+    '''
+        转换成排序字典
+        按照字典value中列表的长度，重新排序字典，将列表长度长的放在最前面进行处理
+        转换形式：
+            value: [ [('xx',i),('aa',i)],[('bb',i)],[('dd',i)] ] ----> [ ('xx',i),('aa',i),('bb',i),('dd',i) ]
+    '''
+    dic = OrderedDict()
+    ## 获取keyLsit
+    keyList = initDic.keys()
+    indexAndSentenceCountTupleList = []
+    for i in range(len(keyList)):
+        indexAndSentenceCountTupleList.append((i,len(initDic[keyList[i]])))
+    ## 排序
+    sortedIndexAndSentenceCountTupleList = sorted(indexAndSentenceCountTupleList,key=lambda item:item[1],reverse=True)
+
+    for tupleItem in sortedIndexAndSentenceCountTupleList:
+        idx = tupleItem[0]
+        relationAndIndexTupeList = listlist2list(initDic[keyList[idx]])
+        dic[keyList[idx]] = relationAndIndexTupeList
+    return dic
+
 
 
 
 if __name__ == '__main__':
 
-    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence.txt')
+    # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence.txt')
+    outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
     ## 配置
     pd.set_option('display.width', 300)
@@ -180,17 +238,30 @@ if __name__ == '__main__':
     relationDic = persistent_relation_object.getRelationShipDic()
 
     ## 作为模块的入口，加载对象
-    sentencePath = inout.getDataOriginPath('sentence_list_corpus_complete_sentence.pkl')
-    sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus_complete_sentence.pkl')
+    # sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+    # sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
+    sentencePath = inout.getDataPklPath('sentence_list_corpus_test.pkl')
+    sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
+
+    ## 加载pkl对象
     sentenceList, slType = inout.readPersistObject(sentencePath)
     sentenceFeatureList, sflType = inout.readPersistObject(sentenceFeaturePath)
+
+    ## 加入去重逻辑
+    sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
+    print '句子去重复完成...'
+
     # print len(sentenceList)
     # for i in range(len(sentenceList)):
     #     printEscapeStr(sentenceList[i])
     #     printEscapeStr(sentenceFeatureList[i])
     #     if i == 5:
     #         break
+    # print len(sentenceList)
+    # printEscapeStr(sentenceList)
+    # print len(sentenceFeatureList)
+    # printEscapeStr(sentenceFeatureList)
     # exit(0)
 
     ## 初始化归类字典
@@ -201,42 +272,55 @@ if __name__ == '__main__':
         namedEntityAndTagList = sentenceFeatureList[i][0]
         otherWordList = sentenceFeatureList[i][1]
 
-        ##  其他词去掉停用词
-        featureWordList = removeStopWord(otherWordList, stopWordList)
+        ## 判断两个命名实体是否相同
+        if not isSameNamedEntity(namedEntityAndTagList):
 
-        ##  去掉特征词中的一个字的词和数字
-        featureWordList = removeOneLengthWord(featureWordList)
+            ##  其他词去掉停用词
+            featureWordList = removeStopWord(otherWordList, stopWordList)
 
-        if featureWordList:
-            ## 获取特征词中含有的命名实体关系词的列表
-            relationWordAndIndexList = getRelationWordList(featureWordList,relationDic,i)
-            if relationWordAndIndexList:
-                ## 归类到字典中
+            ##  去掉特征词中的一个字的词和数字
+            featureWordList = removeOneLengthWord(featureWordList)
 
-                namedEntityPairStr = getNamedEntityPairStr(namedEntityAndTagList)
-                exchangedEntityPairStr = getExchangedNamedEntityPairStr(namedEntityPairStr)
+            if featureWordList:
 
-                if namedEntityPairStr not in initDic.keys() and exchangedEntityPairStr not in initDic.keys():
-                    initDic[namedEntityPairStr] = []
+                ## 获取特征词中含有的命名实体关系词的列表
+                relationWordAndIndexList = getRelationWordList(featureWordList,relationDic,i)
 
-                ## 这里也可以用命名实体排序的方法
-                if namedEntityPairStr in initDic.keys():
-                    initDic[namedEntityPairStr].extend(relationWordAndIndexList)
-                if exchangedEntityPairStr in initDic.keys():
-                    initDic[exchangedEntityPairStr].extend(relationWordAndIndexList)
+                if relationWordAndIndexList:
+                    ## 归类到字典中
+
+                    namedEntityPairStr = getNamedEntityPairStr(namedEntityAndTagList)
+                    exchangedEntityPairStr = getExchangedNamedEntityPairStr(namedEntityPairStr)
+
+                    if namedEntityPairStr not in initDic.keys() and exchangedEntityPairStr not in initDic.keys():
+                        initDic[namedEntityPairStr] = []
+
+                    ## 这里也可以用命名实体排序的方法
+                    if namedEntityPairStr in initDic.keys():
+                        ## !! 注意这里的append的修改
+                        initDic[namedEntityPairStr].append(relationWordAndIndexList)
+                    if exchangedEntityPairStr in initDic.keys():
+                        initDic[exchangedEntityPairStr].append(relationWordAndIndexList)
 
     print '归类完成...'
+    # exit(0)
+
+    ## initDic按照相同实体对句子的多少重新排序字典
+    initDic = convert2SortedDic(initDic)
+    print '排序字典完成...'
 
     fw = open(outputPath,'wb')
 
     i = 1
     for neStr,relationAndIndexTupeList in initDic.items():
         if relationAndIndexTupeList:
+            # printEscapeStr(relationAndIndexTupeList)
             unzipList = zip(*relationAndIndexTupeList)
             relationWordList = unzipList[0]
-            sentenceIndexList = unzipList[1]
+            sentenceIndexList = list(set(unzipList[1]))
 
             relationWordSortedList = getRelationWordSortedList(relationWordList)
+            # printEscapeStr(relationWordSortedList)
 
             outputRelationWordSortedList = getOutputRelationWordSortedList(relationWordSortedList)
 

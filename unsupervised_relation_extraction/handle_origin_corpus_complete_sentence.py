@@ -120,7 +120,7 @@ def mergeNamedEntity(namedEntityList):
 
 if __name__ == '__main__':
 
-    origin_corpus = inout.getDataOriginPath('origin_corpus_sentence.txt')
+    origin_corpus = inout.getDataOriginPath('origin_corpus_test.txt')
 
     infoList = inout.readListFromTxt(origin_corpus)
 
@@ -151,8 +151,11 @@ if __name__ == '__main__':
             printEscapeStr(namedEntityAndTagList)
 
     # 这里要持久化两个对象：sentenceList、sentenceFeatureList
-    sentencePath = inout.getDataOriginPath('sentence_list_corpus_complete_sentence.pkl')
-    sentenceFeaturePath = inout.getDataOriginPath('sentence_feature_list_corpus_complete_sentence.pkl')
+    # sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+    # sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
+
+    sentencePath = inout.getDataPklPath('sentence_list_corpus_test.pkl')
+    sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
 
     inout.writePersistObject(sentencePath, sentenceList)
     inout.writePersistObject(sentenceFeaturePath, sentenceFeatureList)

@@ -31,6 +31,13 @@ def getDataOriginPath(fileName):
     return os.path.join(index.ROOTPATH,index.DATA,index.ORIGIN,fileName)
 
 
+def getDataPklPath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.PKL,fileName)
+
+
 def getDataAnalysisPath(fileName):
     '''
          获取data目录文件路径
