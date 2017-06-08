@@ -245,12 +245,23 @@ if __name__ == '__main__':
     sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
 
     ## 加载pkl对象
+    """
+        这里加载数据的处理策略：
+        1）从pkl对象直接加载
+        2）从文本文件读取数据形成列表
+        最后的数据都以列表形式合并成一个总的列表
+    """
     sentenceList, slType = inout.readPersistObject(sentencePath)
     sentenceFeatureList, sflType = inout.readPersistObject(sentenceFeaturePath)
 
+
+
+
+
     ## 加入去重逻辑
-    sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
-    print '句子去重复完成...'
+    # sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
+    # print '句子去重复完成...'
+
 
     # print len(sentenceList)
     # for i in range(len(sentenceList)):

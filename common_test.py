@@ -6,10 +6,20 @@ from utils.inout import printEscapeStr
 from utils import inout
 
 
-sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+# path = inout.getDataTestPath('origin_corpus_test.txt')
+# infoList = inout.readListFromTxt(path)
+# for item in infoList:
+#     print item
+#     print len(item)
 
-sentenceList, slType = inout.readPersistObject(sentencePath)
-print len(sentenceList)
+
+
+
+
+# sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+#
+# sentenceList, slType = inout.readPersistObject(sentencePath)
+# print len(sentenceList)
 
 
 

@@ -38,6 +38,27 @@ def getDataPklPath(fileName):
     return os.path.join(index.ROOTPATH,index.DATA,index.PKL,fileName)
 
 
+def getDataSentencePath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.SENTENCE,fileName)
+
+
+def getDataNECandyPath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.NE,index.CANDY,fileName)
+
+
+def getDataNEMeatPath(fileName):
+    '''
+         获取data目录文件路径
+    '''
+    return os.path.join(index.ROOTPATH,index.DATA,index.NE,index.MEAT,fileName)
+
+
 def getDataAnalysisPath(fileName):
     '''
          获取data目录文件路径

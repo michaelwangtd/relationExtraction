@@ -13,6 +13,11 @@ ORIGIN = 'origin'
 TEST = 'test'
 ANALYSIS = 'analysis'
 PKL = 'pkl'
+SENTENCE = 'sentence'
+NE = 'ne'
+CANDY = 'candy'
+MEAT = 'meat'
+
 
 RESOURCE = 'resource'
 
