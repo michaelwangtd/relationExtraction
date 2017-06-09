@@ -217,12 +217,47 @@ def convert2SortedDic(initDic):
     return dic
 
 
+def convertDataFormat(infoList):
+    '''
+        input:姚景远	孙彩艳||文章_对_、_进行_了_猛烈_的_人身_抨击_。||文章对姚景远、孙彩艳进行了猛烈的人身抨击。
+        output:
+                [[(姚景远,S-Nh),(孙彩艳,S-Nh)],['生于', '加州', '一个', '中产', '家庭', '，', '意大利', '裔', '父亲']]
+                文章对姚景远、孙彩艳进行了猛烈的人身抨击。
+    '''
+    sentenceList = []
+    sentenceFeatureList = []
+
+    for line in infoList:
+        if len(line.strip().split('||')) == 3:
+            lineList = line.strip().split('||')
+
+            # 处理命名实体对
+            nePairList = []
+            neStrTemp = lineList[0]
+            if len(neStrTemp.split('\t')) == 2:
+                neStrTempList = neStrTemp.split('\t')
+                nePairList.append((neStrTempList[0].strip(),'S-Nh'))
+                nePairList.append((neStrTempList[1].strip(),'S-Nh'))
+
+            # 处理otherWordList
+            otherWordStr = lineList[1]
+            otherWordList = otherWordStr.split('_')
+
+            # 处理句子
+            sentenceStr = lineList[2]
+
+            if nePairList:
+                sentenceFeatureList.append([nePairList,otherWordList])
+                sentenceList.append(sentenceStr)
+    return sentenceList,sentenceFeatureList
+
+
 
 
 if __name__ == '__main__':
 
-    # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence.txt')
-    outputPath = inout.getDataAnalysisPath('analysis_test.txt')
+    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0609.txt')
+    # outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
     ## 配置
     pd.set_option('display.width', 300)
@@ -237,30 +272,48 @@ if __name__ == '__main__':
     ## 加载关系字典
     relationDic = persistent_relation_object.getRelationShipDic()
 
-    ## 作为模块的入口，加载对象
-    # sentencePath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
-    # sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
-    sentencePath = inout.getDataPklPath('sentence_list_corpus_test.pkl')
-    sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
+    ## 作为模块的入口，加载对象
+
+    """
+            这里加载数据的处理策略：
+            1）从pkl对象直接加载
+            2）从文本文件读取数据形成列表
+            最后的数据都以列表形式合并成一个总的列表
+    """
 
     ## 加载pkl对象
-    """
-        这里加载数据的处理策略：
-        1）从pkl对象直接加载
-        2）从文本文件读取数据形成列表
-        最后的数据都以列表形式合并成一个总的列表
-    """
-    sentenceList, slType = inout.readPersistObject(sentencePath)
-    sentenceFeatureList, sflType = inout.readPersistObject(sentenceFeaturePath)
+    sentencePklPath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+    sentenceFeaturePklPath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
+    # sentencePath = inout.getDataPklPath('sentence_list_corpus_test.pkl')
+    # sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
 
+    sentenceList, slType = inout.readPersistObject(sentencePklPath)
+    sentenceFeatureList, sflType = inout.readPersistObject(sentenceFeaturePklPath)
+
+    ## 加载文本数据，并处理成符合要求的形式
+    infoListPartPath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+
+    infoListPart = inout.readListFromTxt(infoListPartPath)
+
+    sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
+
+    ## 合并所有的数据
+    sentenceList.extend(sentenceListTxt)
+    sentenceFeatureList.extend(sentenceFeatureListTxt)
+
+    print 'sentenceList len: ',len(sentenceList)
+    print 'sentenceFeatureList len: ',len(sentenceFeatureList)
+    print '数据加载完毕...'
+    # exit(0)
 
 
 
     ## 加入去重逻辑
-    # sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
-    # print '句子去重复完成...'
+    sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
+    print len(sentenceList)
+    print '句子去重复完成...'
 
 
     # print len(sentenceList)
@@ -339,8 +392,8 @@ if __name__ == '__main__':
 
             sentenceOutputStr = getSentenceOutputStr(sentenceIndexList,sentenceList)
 
-            outputLine = '人物实体：【' + neStr + '】 ' + '\t\t' + '候选关系： 【' + candidateRelationStr + '】' +\
-                '\n' + outputRelationWordSortedList + '\n' +\
+            outputLine = '人物实体：【' + neStr + '】 ' + '\t' + '候选关系： 【' + candidateRelationStr + '】' +\
+                '\t' + '句子个数： ' + str(len(sentenceIndexList)) + '\n' + outputRelationWordSortedList + '\n' +\
                 sentenceOutputStr
 
             fw.write(outputLine + '\n')

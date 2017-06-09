@@ -166,38 +166,97 @@ if __name__ == '__main__':
           这里写一个模板文件
           基本就是：读一条；处理一条；写一条
           
-          在进行命名实体识别之前对数据进行分组分批处理
+          这里实现的是：在进行命名实体识别之前对数据进行分组处理
+                        将数据分开到不同的文件中
     """
     ## 这部分将50w为单位的数据分割成5个10w的句子，存储在文本中
 
-    originFilePath = inout.getDataSentencePath('sentence_0-50w.txt')
+    # originFilePath = inout.getDataSentencePath('sentence_0-50w.txt')
+    #
+    # infoList = inout.readListFromTxt(originFilePath)
+    #
+    # print len(infoList)
+    #
+    # candy_01 = infoList[:100000]
+    # candy_02 = infoList[100000:200000]
+    # candy_03 = infoList[200000:300000]
+    # candy_04 = infoList[300000:400000]
+    # candy_05 = infoList[400000:500000]
+    #
+    # outPath_01 = inout.getDataNECandyPath('sentence_0w-10w.txt')
+    # outPath_02 = inout.getDataNECandyPath('sentence_10w-20w.txt')
+    # outPath_03 = inout.getDataNECandyPath('sentence_20w-30w.txt')
+    # outPath_04 = inout.getDataNECandyPath('sentence_30w-40w.txt')
+    # outPath_05 = inout.getDataNECandyPath('sentence_40w-50w.txt')
+    #
+    # inout.writeList2Txt(outPath_01,candy_01)
+    # print '01 写入完成...'
+    # inout.writeList2Txt(outPath_02,candy_02)
+    # print '02 写入完成...'
+    # inout.writeList2Txt(outPath_03,candy_03)
+    # print '03 写入完成...'
+    # inout.writeList2Txt(outPath_04,candy_04)
+    # print '04 写入完成...'
+    # inout.writeList2Txt(outPath_05,candy_05)
+    # print '05 写入完成...'
 
-    infoList = inout.readListFromTxt(originFilePath)
 
-    print len(infoList)
 
-    candy_01 = infoList[:100000]
-    candy_02 = infoList[100000:200000]
-    candy_03 = infoList[200000:300000]
-    candy_04 = infoList[300000:400000]
-    candy_05 = infoList[400000:500000]
+    """
+        4 将处理完的sentence,sentenceFeature分开的文本合并到一个总的文本中
+        这个总的文本命名为：sentence_and_feature_max_w.txt
+        放在/data/analysis/ne/meat/目录下
+        之前被合并的各部分文件被合并之后放在/data/analysis/ne/meat/backup/目录下
+        
+        程序运行以追加的方式，将各部分文件内容追加到sentence_and_feature_max_w.txt文件中
+    """
+    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+    #
+    # finalList = []
+    #
+    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_0w-10w.txt')
+    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_10w-20w.txt')
+    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_20w-30w.txt')
+    # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_30w-40w.txt')
+    # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_40w-50w.txt')
+    #
+    # info_01 = inout.readListFromTxt(inputPath_01)
+    # info_02 = inout.readListFromTxt(inputPath_02)
+    # info_03 = inout.readListFromTxt(inputPath_03)
+    # info_04 = inout.readListFromTxt(inputPath_04)
+    # info_05 = inout.readListFromTxt(inputPath_05)
+    #
+    # finalList.extend(info_01)
+    # finalList.extend(info_02)
+    # finalList.extend(info_03)
+    # finalList.extend(info_04)
+    # finalList.extend(info_05)
+    #
+    # print len(finalList)
+    #
+    # inout.writeList2Txt(finalMaxFilePath,finalList)
+    # print '写入完成...'
 
-    outPath_01 = inout.getDataNECandyPath('sentence_0w-10w.txt')
-    outPath_02 = inout.getDataNECandyPath('sentence_10w-20w.txt')
-    outPath_03 = inout.getDataNECandyPath('sentence_20w-30w.txt')
-    outPath_04 = inout.getDataNECandyPath('sentence_30w-40w.txt')
-    outPath_05 = inout.getDataNECandyPath('sentence_40w-50w.txt')
 
-    inout.writeList2Txt(outPath_01,candy_01)
-    print '01 写入完成...'
-    inout.writeList2Txt(outPath_02,candy_02)
-    print '02 写入完成...'
-    inout.writeList2Txt(outPath_03,candy_03)
-    print '03 写入完成...'
-    inout.writeList2Txt(outPath_04,candy_04)
-    print '04 写入完成...'
-    inout.writeList2Txt(outPath_05,candy_05)
-    print '05 写入完成...'
+
+
+    """
+        test:
+        测试了原来pkl对象内部的结构：
+        [[('尼古拉斯', 'S-Nh'), ('奥古斯特·科波拉', 'S-Nh')], ['生于', '加州', '一个', '中产', '家庭', '，', '意大利', '裔', '父亲', '是', '文学', '教授', '，', '德国裔', '的', '母亲', 'Joy']]
+    """
+    sentenceFeatureList,typeList = inout.readPersistObject(inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl'))
+
+    i = 1
+    for item in sentenceFeatureList:
+        printEscapeStr(item)
+        printEscapeStr(item[0])
+        printEscapeStr(item[1])
+
+        i = i + 1
+        if i==3:
+            exit(0)
+
 
 
 

@@ -10,10 +10,7 @@ import index
 
 if __name__ == '__main__':
 
-    testStr = '一直在躲雨，雨会不会很难过。早上坐公交车上班？注意到身边一名男子！他穿着干净、得体。。脸庞留下少许岁月的痕迹。'
-    testStr = '李晨喜欢我。我喜欢看书。书是书他妈生的。'
-    testStr = '杨润楷在中国北京的中国科学院计算机研究所学习。'
-    testStr = '中国的首都是北京'
+    testStr = '今年2月份，刘翔的教练孙海平曾公开告诉媒体，冬天的时候可能跟腱会更脆弱，他们计划等到四五月份天气变暖，再看看情况。'
 
     ##1 分句
     # re = SentenceSplitter.split(testStr)
@@ -29,9 +26,9 @@ if __name__ == '__main__':
     segmentor.release()
     # print type(words)
     # print words
-    # result = '__'.join(words)
+    result = '__'.join(words)
     # print type(result)
-    # print result
+    print result
     # wordList = list(words)
     # for item in wordList:
     #     print type(item)
@@ -46,7 +43,7 @@ if __name__ == '__main__':
     postagger.release()
     # print type(postags)
     # print postags
-    # print '\t'.join(postags)
+    print '\t'.join(postags)
     # for word,tag in zip(words,postags):
     #     print word + '\t' + tag
 
