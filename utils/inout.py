@@ -199,6 +199,20 @@ def writeList2Txt(filePath,infoList):
             f.write(outputLine + '\n')
         f.close()
 
+def appendList2Txt(filePath,infoList):
+    '''
+        追加写入
+    '''
+    if infoList:
+        f = codecs.open(filePath,'ab')
+        for i in range(len(infoList)):
+            if isinstance(infoList[i],list):
+                outputLine = ','.join(infoList[i]).strip()
+            elif isinstance(infoList[i],str):
+                outputLine = infoList[i].strip()
+            f.write(outputLine + '\n')
+        f.close()
+
 
 """
     控制台打印相关

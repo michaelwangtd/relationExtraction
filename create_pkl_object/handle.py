@@ -171,7 +171,7 @@ if __name__ == '__main__':
     """
     ## 这部分将50w为单位的数据分割成5个10w的句子，存储在文本中
 
-    # originFilePath = inout.getDataSentencePath('sentence_50w-100w.txt')
+    # originFilePath = inout.getDataSentencePath('sentence_100w-150w.txt')
     #
     # infoList = inout.readListFromTxt(originFilePath)
     #
@@ -184,11 +184,11 @@ if __name__ == '__main__':
     # candy_04 = infoList[300000:400000]
     # candy_05 = infoList[400000:500000]
     #
-    # outPath_01 = inout.getDataNECandyPath('sentence_50w-60w.txt')
-    # outPath_02 = inout.getDataNECandyPath('sentence_60w-70w.txt')
-    # outPath_03 = inout.getDataNECandyPath('sentence_70w-80w.txt')
-    # outPath_04 = inout.getDataNECandyPath('sentence_80w-90w.txt')
-    # outPath_05 = inout.getDataNECandyPath('sentence_90w-100w.txt')
+    # outPath_01 = inout.getDataNECandyPath('sentence_100w-110w.txt')
+    # outPath_02 = inout.getDataNECandyPath('sentence_110w-120w.txt')
+    # outPath_03 = inout.getDataNECandyPath('sentence_120w-130w.txt')
+    # outPath_04 = inout.getDataNECandyPath('sentence_130w-140w.txt')
+    # outPath_05 = inout.getDataNECandyPath('sentence_140w-150w.txt')
     #
     # inout.writeList2Txt(outPath_01,candy_01)
     # print '01 写入完成...'
@@ -211,34 +211,37 @@ if __name__ == '__main__':
         
         程序运行以追加的方式，将各部分文件内容追加到sentence_and_feature_max_w.txt文件中
     """
-    finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
-
-    finalList = []
-
-    inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_50w-60w.txt')
-    inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_60w-70w.txt')
-    inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_70w-80w.txt')
-    inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_80w-90w.txt')
-    inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_90w-100w.txt')
-
-    info_01 = inout.readListFromTxt(inputPath_01)
-    info_02 = inout.readListFromTxt(inputPath_02)
-    info_03 = inout.readListFromTxt(inputPath_03)
-    info_04 = inout.readListFromTxt(inputPath_04)
-    info_05 = inout.readListFromTxt(inputPath_05)
-
-    finalList.extend(info_01)
-    finalList.extend(info_02)
-    finalList.extend(info_03)
-    finalList.extend(info_04)
-    finalList.extend(info_05)
-
-    print len(finalList)
-
-    # exit(0)
-
-    inout.writeList2Txt(finalMaxFilePath,finalList)
-    print '写入完成...'
+    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+    #
+    # finalList = []
+    #
+    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_50w-60w.txt')
+    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_60w-70w.txt')
+    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_70w-80w.txt')
+    # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_80w-90w.txt')
+    # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_90w-100w.txt')
+    #
+    # info_01 = inout.readListFromTxt(inputPath_01)
+    # info_02 = inout.readListFromTxt(inputPath_02)
+    # info_03 = inout.readListFromTxt(inputPath_03)
+    # info_04 = inout.readListFromTxt(inputPath_04)
+    # info_05 = inout.readListFromTxt(inputPath_05)
+    #
+    # finalList.extend(info_01)
+    # finalList.extend(info_02)
+    # finalList.extend(info_03)
+    # finalList.extend(info_04)
+    # finalList.extend(info_05)
+    #
+    # print len(finalList)
+    #
+    # # exit(0)
+    #
+    # # inout.writeList2Txt(finalMaxFilePath,finalList)
+    #
+    # inout.appendList2Txt(finalMaxFilePath,finalList)
+    #
+    # print '写入完成...'
 
 
 
