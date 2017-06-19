@@ -105,9 +105,9 @@ def mergeNamedEntity(namedEntityList):
 
 if __name__ == '__main__':
 
-    inputPath = inout.getDataNECandyPath('sentence_120w-130w.txt')
+    inputPath = inout.getDataNECandyPath('sentence_147w-148w.txt')
 
-    outputPath = inout.getDataNEMeatPath('sentence_and_feature_120w-130w.txt')
+    outputPath = inout.getDataNEMeatPath('sentence_and_feature_147w-148w.txt')
 
     fr = codecs.open(inputPath,'rb')
 

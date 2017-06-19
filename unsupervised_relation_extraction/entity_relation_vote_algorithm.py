@@ -173,6 +173,7 @@ def isSameNamedEntity(namedEntityAndTagList):
 def distinct(sentenceList,sentenceFeatureList):
     '''
         列表元素去除重复
+        适用于文本数量较少，大规模的数据量使用该函数会很慢
     '''
     resultSenList = []
     resultSenFeaList = []
@@ -182,6 +183,33 @@ def distinct(sentenceList,sentenceFeatureList):
         if not sentenceFeatureList[i] in resultSenFeaList:
             resultSenFeaList.append(sentenceFeatureList[i])
     return resultSenList,resultSenFeaList
+
+
+def dictDistinct(sentenceList,sentenceFeatureList):
+    '''
+        利用python dict结果进行过滤
+    '''
+
+    indexDic = dict()
+
+    resultSentenceList = []
+    resultSentenceFeatureList = []
+
+    for i in range(len(sentenceList)):
+        indexDic[str(sentenceList[i])] = i
+
+    indexList = []
+    for k,v in indexDic.items():
+        indexList.append(v)
+    indexList = list(set(indexList))
+
+    for idx in indexList:
+        resultSentenceList.append(sentenceList[idx])
+        resultSentenceFeatureList.append(sentenceFeatureList[idx])
+
+    return resultSentenceList,resultSentenceFeatureList
+
+
 
 
 def listlist2list(listlist):
@@ -254,9 +282,11 @@ def convertDataFormat(infoList):
 
 
 
+
 if __name__ == '__main__':
 
-    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0609.txt')
+    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_.txt')
+    # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0615.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
     ## 配置
@@ -281,40 +311,76 @@ if __name__ == '__main__':
             2）从文本文件读取数据形成列表
             最后的数据都以列表形式合并成一个总的列表
     """
+    sentenceList = []
+    sentenceFeatureList = []
 
-    ## 加载pkl对象
-    sentencePklPath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
-    sentenceFeaturePklPath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
+
+    ## 1 加载pkl对象
+    # sentencePklPath = inout.getDataPklPath('sentence_list_corpus_complete_sentence.pkl')
+    # sentenceFeaturePklPath = inout.getDataPklPath('sentence_feature_list_corpus_complete_sentence.pkl')
 
     # sentencePath = inout.getDataPklPath('sentence_list_corpus_test.pkl')
     # sentenceFeaturePath = inout.getDataPklPath('sentence_feature_list_corpus_test.pkl')
 
-    sentenceList, slType = inout.readPersistObject(sentencePklPath)
-    sentenceFeatureList, sflType = inout.readPersistObject(sentenceFeaturePklPath)
+    # sentencePklList, slType = inout.readPersistObject(sentencePklPath)
+    # sentenceFeaturePklList, sflType = inout.readPersistObject(sentenceFeaturePklPath)
 
-    ## 加载文本数据，并处理成符合要求的形式
-    infoListPartPath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+    ## 2 加载pyltp 命名实体识别数据
+    # infoListPartPath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+    #
+    # infoListPart = inout.readListFromTxt(infoListPartPath)
+    #
+    # sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
 
-    infoListPart = inout.readListFromTxt(infoListPartPath)
+    ## 3 加载 fnlp 命名实体识别数据
+    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-250_fnlp.txt')
 
-    sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
+    fnlpList = inout.readListFromTxt(fnlpListPath)
+
+    fnlpSentenceList,fnlpSentenceFeatureList = convertDataFormat(fnlpList)
+    # print 'fnlp list len:',len(fnlpSentenceList)
+
+    # exit(0)
+
 
     ## 合并所有的数据
-    sentenceList.extend(sentenceListTxt)
-    sentenceFeatureList.extend(sentenceFeatureListTxt)
+    # sentenceList.extend(sentencePklList)
+    # sentenceFeatureList.extend(sentenceFeaturePklList)
+    #
+    # sentenceList.extend(sentenceListTxt)
+    # sentenceFeatureList.extend(sentenceFeatureListTxt)
+
+    sentenceList.extend(fnlpSentenceList)
+    sentenceFeatureList.extend(fnlpSentenceFeatureList)
+
+
+
+
+
+
+
 
     print 'sentenceList len: ',len(sentenceList)
     print 'sentenceFeatureList len: ',len(sentenceFeatureList)
     print '数据加载完毕...'
+
+    # inout.writeList2Txt(inout.getDataTestPath('sentence.txt'),sentenceList)
+    # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('sentenceFeature.txt'),sentenceFeatureList)
     # exit(0)
 
 
 
     ## 加入去重逻辑
-    sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
+    # sentenceList,sentenceFeatureList = distinct(sentenceList,sentenceFeatureList)
+    ## 利用python的dict结构去重
+    sentenceList,sentenceFeatureList = dictDistinct(sentenceList,sentenceFeatureList)
     print len(sentenceList)
     print '句子去重复完成...'
 
+    # inout.writeList2Txt(inout.getDataTestPath('fnlp_sentence.txt'),sentenceList)
+    # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('fnlp_sentenceFeature.txt'),sentenceFeatureList)
+
+    # exit(0)
 
     # print len(sentenceList)
     # for i in range(len(sentenceList)):
@@ -332,9 +398,15 @@ if __name__ == '__main__':
     initDic = dict()
 
     ## 开始处理
+    print '开始处理...'
     for i in range(len(sentenceFeatureList)):
-        namedEntityAndTagList = sentenceFeatureList[i][0]
-        otherWordList = sentenceFeatureList[i][1]
+
+        if isinstance(sentenceFeatureList[i],str):
+            sentenceFeature = eval(sentenceFeatureList[i])
+        sentenceFeature = sentenceFeatureList[i]
+
+        namedEntityAndTagList = sentenceFeature[0]
+        otherWordList = sentenceFeature[1]
 
         ## 判断两个命名实体是否相同
         if not isSameNamedEntity(namedEntityAndTagList):

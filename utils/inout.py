@@ -9,6 +9,31 @@ import json
 import index
 import pickle
 
+
+"""
+    这里的函数只是在特定场景下使用的
+    一次性使用
+"""
+def writeFnlpSentenceFeature2Txt(filePath,sentenceFeatureList):
+    '''
+
+    '''
+    fw = codecs.open(filePath,'wb')
+    for item in sentenceFeatureList:
+        if isinstance(item,str):
+            item = eval(item)
+        result = ''
+        firstPart = ' '.join(zip(*item[0])[0])
+        sencondPart = '_'.join(item[1])
+        result = result + firstPart
+        result = result + '||'
+        result = result + sencondPart
+        fw.write(result + '\n')
+    fw.close()
+
+
+
+
 """
     获取路径相关
 """

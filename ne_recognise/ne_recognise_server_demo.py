@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from utils import inout
-from utils.inout import printEscapeStr
+# from utils import inout
+# from utils.inout import printEscapeStr
 from pyltp import Segmentor
 from pyltp import Postagger
 from pyltp import NamedEntityRecognizer
-import index
+# import index
 import codecs
 
 
@@ -15,19 +15,27 @@ def namedEntityRecognize(sentence):
         使用pyltp模块进行命名实体识别
         返回：1）命名实体和类别元组列表、2）实体类别列表
     '''
+    ltpCWSPath = ''
+    ltpPOSPath = ''
+    userDicPath = ''
+    ltpNERPath = ''
+
     namedEntityTagTupleList = []
 
     segmentor = Segmentor()
     # segmentor.load(inout.getLTPPath(index.CWS))
-    segmentor.load_with_lexicon(inout.getLTPPath(index.CWS),inout.getResourcePath('userDic.txt'))
+
+    # segmentor.load_with_lexicon(inout.getLTPPath(index.CWS),inout.getResourcePath('userDic.txt'))
+    segmentor.load_with_lexicon(ltpCWSPath,userDicPath)
+
     words = segmentor.segment(sentence)
     segmentor.release()
     postagger = Postagger()
-    postagger.load(inout.getLTPPath(index.POS))
+    postagger.load(ltpPOSPath)
     postags = postagger.postag(words)
     postagger.release()
     recognizer = NamedEntityRecognizer()
-    recognizer.load(inout.getLTPPath(index.NER))
+    recognizer.load(ltpNERPath)
     netags = recognizer.recognize(words,postags)
     recognizer.release()
 
@@ -105,9 +113,13 @@ def mergeNamedEntity(namedEntityList):
 
 if __name__ == '__main__':
 
-    inputPath = inout.getDataNECandyPath('sentence_145w-146w.txt')
+    # inputPath = inout.getDataNECandyPath('sentence_145w-146w.txt')
 
-    outputPath = inout.getDataNEMeatPath('sentence_and_feature_145w-146w.txt')
+    inputPath = '/'
+
+    # outputPath = inout.getDataNEMeatPath('sentence_and_feature_145w-146w.txt')
+
+    outputPath = '/'
 
     fr = codecs.open(inputPath,'rb')
 
