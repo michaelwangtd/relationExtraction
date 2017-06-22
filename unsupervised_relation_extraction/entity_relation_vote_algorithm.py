@@ -264,8 +264,16 @@ def convertDataFormat(infoList):
             neStrTemp = lineList[0]
             if len(neStrTemp.split('\t')) == 2:
                 neStrTempList = neStrTemp.split('\t')
-                nePairList.append((neStrTempList[0].strip(),'S-Nh'))
-                nePairList.append((neStrTempList[1].strip(),'S-Nh'))
+
+                ## 对命名实体进行筛选
+                if '某' not in neStrTempList[0].strip() and '某' not in neStrTempList[1].strip():
+
+                    if len(neStrTempList[0].strip()) > 3 and len(neStrTempList[1].strip()) > 3:
+
+                        if neStrTempList[0].strip() != neStrTempList[1]:
+
+                            nePairList.append((neStrTempList[0].strip(),'S-Nh'))
+                            nePairList.append((neStrTempList[1].strip(),'S-Nh'))
 
             # 处理otherWordList
             otherWordStr = lineList[1]
@@ -285,7 +293,7 @@ def convertDataFormat(infoList):
 
 if __name__ == '__main__':
 
-    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_.txt')
+    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-300w.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0615.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
@@ -333,7 +341,7 @@ if __name__ == '__main__':
     # sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
 
     ## 3 加载 fnlp 命名实体识别数据
-    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-250_fnlp.txt')
+    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-300_fnlp.txt')
 
     fnlpList = inout.readListFromTxt(fnlpListPath)
 
@@ -380,6 +388,15 @@ if __name__ == '__main__':
     # inout.writeList2Txt(inout.getDataTestPath('fnlp_sentence.txt'),sentenceList)
     # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('fnlp_sentenceFeature.txt'),sentenceFeatureList)
 
+
+
+    # exit(0)
+
+
+    # for i in range(len(sentenceFeatureList)):
+    #     printEscapeStr(sentenceFeatureList[i][0])
+    #     if i==5:
+    #         break
     # exit(0)
 
     # print len(sentenceList)
