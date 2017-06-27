@@ -70,26 +70,27 @@ if __name__ == '__main__':
 
 
     """
-        1 如果从cmpp里获取文章的时候，出现断断续续的情况
-          在这里将几个部分的文件合并形成一个完整的origin_corpus文件
+        1 合并文件
     """
-    # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
+    # # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
+    # rootPath = 'D:\\workstation\\repositories\\relationExtraction\\data\\sentence'
     #
-    # inpPath_01 = rootPath + '\\origin_corpus_1000000_1250000.txt'
-    # inpPath_02 = rootPath + '\\origin_corpus_1250000_1500000.txt'
+    # inpPath_01 = rootPath + '\\sentence_0-50w.txt'
+    # inpPath_02 = rootPath + '\\sentence_50w-100w.txt'
+    # inpPath_03 = rootPath + '\\sentence_100w-150w.txt'
     #
-    # outpPath = inout.getDataOriginPath('origin_corpus_100w-150w.txt')
+    # outputPath = inout.getDataSentencePath('sentence_0-150w.txt')
     #
     # infoList1 = inout.readListFromTxt(inpPath_01)
-    # print len(infoList1)
+    # infoList2 = inout.readListFromTxt(inpPath_02)
+    # infoList3 = inout.readListFromTxt(inpPath_03)
+    # # print len(infoList1)
     # # exit(0)
     #
-    # infoList2 = inout.readListFromTxt(inpPath_02)
-    # print len(infoList2)
-    #
     # infoList1.extend(infoList2)
+    # infoList1.extend(infoList3)
     #
-    # inout.writeList2Txt(outpPath,infoList1)
+    # inout.writeList2Txt(outputPath,infoList1)
     # print '生成新文件完成...'
 
 
@@ -228,15 +229,15 @@ if __name__ == '__main__':
         
         程序运行以追加的方式，将各部分文件内容追加到sentence_and_feature_max_w.txt文件中
     """
-    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_150-300_fnlp.txt')
+    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_150-550_fnlp.txt')
     #
     # finalList = []
     #
-    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_300w-310w.txt')
-    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_310w-320w.txt')
-    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_320w-330w.txt')
-    # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_330w-340w.txt')
-    # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_340w-350w.txt')
+    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_500w-510w.txt')
+    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_510w-520w.txt')
+    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_520w-530w.txt')
+    # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_530w-540w.txt')
+    # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_540w-550w.txt')
     #
     # info_01 = inout.readListFromTxt(inputPath_01)
     # info_02 = inout.readListFromTxt(inputPath_02)
