@@ -7,6 +7,7 @@ from utils import inout
 from utils.inout import printEscapeStr
 import persistent_relation_object
 from collections import OrderedDict
+import time
 
 
 def removeStopWord(otherWordList,stopWordList):
@@ -293,7 +294,7 @@ def convertDataFormat(infoList):
 
 if __name__ == '__main__':
 
-    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-300w.txt')
+    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-700w.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0615.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
@@ -341,7 +342,8 @@ if __name__ == '__main__':
     # sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
 
     ## 3 加载 fnlp 命名实体识别数据
-    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-300_fnlp.txt')
+    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-700_fnlp.txt')
+    # fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
 
     fnlpList = inout.readListFromTxt(fnlpListPath)
 
@@ -416,6 +418,9 @@ if __name__ == '__main__':
 
     ## 开始处理
     print '开始处理...'
+    startTime = time.time()
+    print startTime
+
     for i in range(len(sentenceFeatureList)):
 
         if isinstance(sentenceFeatureList[i],str):
@@ -486,8 +491,16 @@ if __name__ == '__main__':
                 sentenceOutputStr
 
             fw.write(outputLine + '\n')
-            print i
+            # print i
             i = i + 1
+
+    print 'i:'
+    print i
+
+    endTime = time.time()
+    print endTime
+    print 'end-start:'
+    print endTime-startTime
 
     fw.close()
 

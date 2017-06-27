@@ -233,23 +233,23 @@ if __name__ == '__main__':
     #
     # finalList = []
     #
-    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_500w-510w.txt')
-    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_510w-520w.txt')
-    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_520w-530w.txt')
-    # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_530w-540w.txt')
-    # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_540w-550w.txt')
+    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_550w-600w.txt')
+    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_600w-650w.txt')
+    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_650w-700w.txt')
+    # # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_530w-540w.txt')
+    # # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_540w-550w.txt')
     #
     # info_01 = inout.readListFromTxt(inputPath_01)
     # info_02 = inout.readListFromTxt(inputPath_02)
     # info_03 = inout.readListFromTxt(inputPath_03)
-    # info_04 = inout.readListFromTxt(inputPath_04)
-    # info_05 = inout.readListFromTxt(inputPath_05)
+    # # info_04 = inout.readListFromTxt(inputPath_04)
+    # # info_05 = inout.readListFromTxt(inputPath_05)
     #
     # finalList.extend(info_01)
     # finalList.extend(info_02)
     # finalList.extend(info_03)
-    # finalList.extend(info_04)
-    # finalList.extend(info_05)
+    # # finalList.extend(info_04)
+    # # finalList.extend(info_05)
     #
     # print len(finalList)
     #
