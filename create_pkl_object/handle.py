@@ -4,6 +4,7 @@
 import index
 from utils import inout
 from utils.inout import printEscapeStr
+import codecs
 
 
 def getNewLineList(lineList):
@@ -72,26 +73,28 @@ if __name__ == '__main__':
     """
         1 合并文件
     """
-    # # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
-    # rootPath = 'D:\\workstation\\repositories\\relationExtraction\\data\\sentence'
-    #
-    # inpPath_01 = rootPath + '\\sentence_0-50w.txt'
-    # inpPath_02 = rootPath + '\\sentence_50w-100w.txt'
+    # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
+    rootPath = 'D:\\workstation\\repositories\\relationExtraction\\data\\sentence'
+
+    inpPath_01 = rootPath + '\\sentence_1200w-12359300.txt'
+    inpPath_02 = rootPath + '\\sentence_12359300-1300w.txt'
     # inpPath_03 = rootPath + '\\sentence_100w-150w.txt'
-    #
-    # outputPath = inout.getDataSentencePath('sentence_0-150w.txt')
-    #
-    # infoList1 = inout.readListFromTxt(inpPath_01)
-    # infoList2 = inout.readListFromTxt(inpPath_02)
+
+    outputPath = inout.getDataSentencePath('sentence_1200w-1300w.txt')
+    resultList = []
+
+    infoList1 = inout.readListFromTxt(inpPath_01)
+    infoList2 = inout.readListFromTxt(inpPath_02)
     # infoList3 = inout.readListFromTxt(inpPath_03)
-    # # print len(infoList1)
-    # # exit(0)
-    #
-    # infoList1.extend(infoList2)
-    # infoList1.extend(infoList3)
-    #
-    # inout.writeList2Txt(outputPath,infoList1)
-    # print '生成新文件完成...'
+    # print len(infoList1)
+    # exit(0)
+
+    resultList.extend(infoList1)
+    resultList.extend(infoList2)
+    # resultList.append(infoList3)
+
+    inout.writeList2Txt(outputPath,resultList)
+    print '生成新文件完成...'
 
 
 
@@ -260,6 +263,30 @@ if __name__ == '__main__':
     # inout.appendList2Txt(finalMaxFilePath,finalList)
     #
     # print '写入完成...'
+
+
+
+
+    """
+        5 从已抽取的关系文件中（analysis）选取符合条件的关系
+    """
+    # fr = codecs.open(inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-700w.txt'))
+    #
+    # resultList = []
+    #
+    # i = 1
+    # while i<200:
+    #     line = fr.readline()
+    #     if line:
+    #         if '人物实体：【' in line:
+    #             resultList.append(line.strip())
+    #             i += 1
+    # fr.close()
+    # outFilePath = inout.getDataOriginPath('graph_candidate_entity_relation.txt')
+    # inout.writeList2Txt(outFilePath,resultList)
+
+
+
 
 
 
