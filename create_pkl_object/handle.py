@@ -73,28 +73,28 @@ if __name__ == '__main__':
     """
         1 合并文件
     """
-    # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
-    rootPath = 'D:\\workstation\\repositories\\relationExtraction\\data\\sentence'
-
-    inpPath_01 = rootPath + '\\sentence_1200w-12359300.txt'
-    inpPath_02 = rootPath + '\\sentence_12359300-1300w.txt'
-    # inpPath_03 = rootPath + '\\sentence_100w-150w.txt'
-
-    outputPath = inout.getDataSentencePath('sentence_1200w-1300w.txt')
-    resultList = []
-
-    infoList1 = inout.readListFromTxt(inpPath_01)
-    infoList2 = inout.readListFromTxt(inpPath_02)
-    # infoList3 = inout.readListFromTxt(inpPath_03)
-    # print len(infoList1)
-    # exit(0)
-
-    resultList.extend(infoList1)
-    resultList.extend(infoList2)
-    # resultList.append(infoList3)
-
-    inout.writeList2Txt(outputPath,resultList)
-    print '生成新文件完成...'
+    # # rootPath = 'D:\\data_relation_extraction\\resource\\cmpp'
+    # rootPath = 'D:\\workstation\\repositories\\relationExtraction\\data\\sentence'
+    #
+    # inpPath_01 = rootPath + '\\sentence_1200w-12359300.txt'
+    # inpPath_02 = rootPath + '\\sentence_12359300-1300w.txt'
+    # # inpPath_03 = rootPath + '\\sentence_100w-150w.txt'
+    #
+    # outputPath = inout.getDataSentencePath('sentence_1200w-1300w.txt')
+    # resultList = []
+    #
+    # infoList1 = inout.readListFromTxt(inpPath_01)
+    # infoList2 = inout.readListFromTxt(inpPath_02)
+    # # infoList3 = inout.readListFromTxt(inpPath_03)
+    # # print len(infoList1)
+    # # exit(0)
+    #
+    # resultList.extend(infoList1)
+    # resultList.extend(infoList2)
+    # # resultList.append(infoList3)
+    #
+    # inout.writeList2Txt(outputPath,resultList)
+    # print '生成新文件完成...'
 
 
 
