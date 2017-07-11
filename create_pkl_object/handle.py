@@ -232,25 +232,25 @@ if __name__ == '__main__':
         
         程序运行以追加的方式，将各部分文件内容追加到sentence_and_feature_max_w.txt文件中
     """
-    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_150-550_fnlp.txt')
+    # finalMaxFilePath = inout.getDataNEMeatPath('sentence_and_feature_900w-2100w_fnlp_new.txt')
     #
     # finalList = []
     #
-    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_550w-600w.txt')
-    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_600w-650w.txt')
-    # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_650w-700w.txt')
-    # # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_530w-540w.txt')
-    # # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_540w-550w.txt')
+    # inputPath_01 = inout.getDataNEMeatPath('sentence_and_feature_1900w-2000w.txt')
+    # inputPath_02 = inout.getDataNEMeatPath('sentence_and_feature_2000w-2100w.txt')
+    # # inputPath_03 = inout.getDataNEMeatPath('sentence_and_feature_1600w-1700w.txt')
+    # # inputPath_04 = inout.getDataNEMeatPath('sentence_and_feature_1700w-1800w.txt')
+    # # inputPath_05 = inout.getDataNEMeatPath('sentence_and_feature_1800w-1900w.txt')
     #
     # info_01 = inout.readListFromTxt(inputPath_01)
     # info_02 = inout.readListFromTxt(inputPath_02)
-    # info_03 = inout.readListFromTxt(inputPath_03)
+    # # info_03 = inout.readListFromTxt(inputPath_03)
     # # info_04 = inout.readListFromTxt(inputPath_04)
     # # info_05 = inout.readListFromTxt(inputPath_05)
     #
     # finalList.extend(info_01)
     # finalList.extend(info_02)
-    # finalList.extend(info_03)
+    # # finalList.extend(info_03)
     # # finalList.extend(info_04)
     # # finalList.extend(info_05)
     #
@@ -258,8 +258,10 @@ if __name__ == '__main__':
     #
     # # exit(0)
     #
+    # # 覆盖写
     # # inout.writeList2Txt(finalMaxFilePath,finalList)
     #
+    # # 追加写
     # inout.appendList2Txt(finalMaxFilePath,finalList)
     #
     # print '写入完成...'

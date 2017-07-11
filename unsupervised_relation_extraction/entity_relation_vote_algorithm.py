@@ -289,12 +289,63 @@ def convertDataFormat(infoList):
     return sentenceList,sentenceFeatureList
 
 
+def convertNewDataFormat(infoList):
+    '''
+
+    '''
+    sentenceList = []
+    sentenceFeatureList = []
+
+    for line in infoList:
+        if len(line.strip().split('#OUTER#'))==4:
+            lineList = line.strip().split('#OUTER#')
+
+            # 处理命名实体对
+            nePairList = []
+            if 'entityPair' in lineList[0]:
+
+                neStrTemp = lineList[0].split('#INNER#')[1]
+                if len(neStrTemp.split('\t')) == 2:
+                    neStrTempList = neStrTemp.split('\t')
+
+                    if '某' not in neStrTempList[0].strip() and '某' not in neStrTempList[1].strip():
+
+                        if len(neStrTempList[0].strip()) > 3 and len(neStrTempList[1].strip()) > 3:
+
+                            if neStrTempList[0].strip() != neStrTempList[1]:
+
+                                nePairList.append((neStrTempList[0].strip(), 'S-Nh'))
+                                nePairList.append((neStrTempList[1].strip(), 'S-Nh'))
+
+            # 处理otherWordList
+            otherWordList = []
+            if 'wordList' in lineList[1]:
+                otherWordStr = lineList[1].split('#INNER#')[1]
+                otherWordList = otherWordStr.split('_')
+
+            sentenceStr = ''
+            # 处理句子
+            if 'sentence' in lineList[2]:
+                sentenceStr = lineList[2].split('#INNER#')[1]
+
+            time = ''
+            if 'time' in lineList[3]:
+                if len(lineList[3].split('#INNER#'))==2:
+                    if lineList[3].split('#INNER#')[1]!='':
+                        time = lineList[3].split('#INNER#')[1]
+            comSentence = time + '#INNER#' + sentenceStr
+
+            if nePairList:
+                sentenceFeatureList.append([nePairList,otherWordList])
+                sentenceList.append(comSentence)
+    return sentenceList, sentenceFeatureList
 
 
 
 if __name__ == '__main__':
 
-    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-700w.txt')
+    # 输出路径
+    outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-2100w.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_vote_sentence_0615.txt')
     # outputPath = inout.getDataAnalysisPath('analysis_test.txt')
 
@@ -341,13 +392,39 @@ if __name__ == '__main__':
     #
     # sentenceListTxt,sentenceFeatureListTxt = convertDataFormat(infoListPart)
 
-    ## 3 加载 fnlp 命名实体识别数据
-    fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150-700_fnlp.txt')
-    # fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_max_w.txt')
+    ## 3 加载 fnlp 命名实体识别数据 旧版数据
+    # fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150w-900w_fnlp_old.txt')
+    fnlpListPath = inout.getDataTestPath('sentence_and_feature_test.txt')
 
-    fnlpList = inout.readListFromTxt(fnlpListPath)
+    fnlpOldDataList = inout.readListFromTxt(fnlpListPath)
+    print'原始-数据-旧 len:', len(fnlpOldDataList)
 
-    fnlpSentenceList,fnlpSentenceFeatureList = convertDataFormat(fnlpList)
+    fnlpSentenceList_old,fnlpSentenceFeatureList_old = convertDataFormat(fnlpOldDataList)
+    print'处理-数据-旧 len:', len(fnlpSentenceList_old)
+
+    sentenceList.extend(fnlpSentenceList_old)
+    sentenceFeatureList.extend(fnlpSentenceFeatureList_old)
+
+    ## 4 加载 fnlp 命名实体识别数据 数据新接口
+
+    # fnlpNewDataListPath = inout.getDataNEMeatPath('sentence_and_feature_900w-2100w_fnlp_new.txt')
+    fnlpNewDataListPath = inout.getDataTestPath('sentence_and_feature_test_new.txt')
+
+    fnlpNewDataList = inout.readListFromTxt(fnlpNewDataListPath)
+    print'原始-数据-新 len:', len(fnlpNewDataList)
+
+    fnlpSentenceList_new,fnlpSentenceFeatureList_new = convertNewDataFormat(fnlpNewDataList)
+    print'处理-数据-新 len:', len(fnlpSentenceList_new)
+
+    sentenceList.extend(fnlpSentenceList_new)
+    sentenceFeatureList.extend(fnlpSentenceFeatureList_new)
+
+
+
+    # for i in range(5):
+    #     printEscapeStr(fnlpSentenceFeatureList_new[i])
+    #     print fnlpSentenceList_new[i]
+
     # print 'fnlp list len:',len(fnlpSentenceList)
 
     # exit(0)
@@ -360,15 +437,6 @@ if __name__ == '__main__':
     # sentenceList.extend(sentenceListTxt)
     # sentenceFeatureList.extend(sentenceFeatureListTxt)
 
-    sentenceList.extend(fnlpSentenceList)
-    sentenceFeatureList.extend(fnlpSentenceFeatureList)
-
-
-
-
-
-
-
 
     print 'sentenceList len: ',len(sentenceList)
     print 'sentenceFeatureList len: ',len(sentenceFeatureList)
@@ -376,7 +444,7 @@ if __name__ == '__main__':
 
     # inout.writeList2Txt(inout.getDataTestPath('sentence.txt'),sentenceList)
     # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('sentenceFeature.txt'),sentenceFeatureList)
-    # exit(0)
+    exit(0)
 
 
 
