@@ -444,7 +444,7 @@ if __name__ == '__main__':
 
     # inout.writeList2Txt(inout.getDataTestPath('sentence.txt'),sentenceList)
     # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('sentenceFeature.txt'),sentenceFeatureList)
-    exit(0)
+    # exit(0)
 
 
 
@@ -458,7 +458,9 @@ if __name__ == '__main__':
     # inout.writeList2Txt(inout.getDataTestPath('fnlp_sentence.txt'),sentenceList)
     # inout.writeFnlpSentenceFeature2Txt(inout.getDataTestPath('fnlp_sentenceFeature.txt'),sentenceFeatureList)
 
-
+    # for i in range(len(sentenceList)):
+    #     print sentenceList[i]
+    #     printEscapeStr(sentenceFeatureList[i])
 
     # exit(0)
 

@@ -272,21 +272,38 @@ if __name__ == '__main__':
     """
         5 从已抽取的关系文件中（analysis）选取符合条件的关系
     """
-    # fr = codecs.open(inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-700w.txt'))
-    #
-    # resultList = []
-    #
-    # i = 1
-    # while i<200:
-    #     line = fr.readline()
-    #     if line:
-    #         if '人物实体：【' in line:
-    #             resultList.append(line.strip())
-    #             i += 1
-    # fr.close()
-    # outFilePath = inout.getDataOriginPath('graph_candidate_entity_relation.txt')
-    # inout.writeList2Txt(outFilePath,resultList)
+    fr = codecs.open(inout.getDataAnalysisPath('analysis_vote_sentence_fnlp_150w-2100w.txt'),'rb')
 
+    # fw = codecs.open(inout.getDataAnalysisPath('graph_candidate_entity_relation_150w-2100w.txt'),'wb')
+
+    resultList = []
+
+    i = 0
+    # while i<200:
+    while True:
+        line = fr.readline()
+        i += 1
+        if line:
+            if '人物实体：【' in line:
+
+                # outputLine = line.strip()
+
+                # fw.write(outputLine + '\n')
+
+                resultList.append(line.strip())
+                # i += 1
+        print i
+
+    # fw.close()
+    fr.close()
+
+
+
+
+    outFilePath = inout.getDataOriginPath('graph_candidate_entity_relation_150w-2100w.txt')
+    inout.writeList2Txt(outFilePath,resultList)
+
+    print '写入完成...'
 
 
 
