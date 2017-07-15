@@ -8,6 +8,9 @@
 
 from utils import inout
 import codecs
+from time import time
+from utils import systm
+from tqdm import tqdm
 
 def convertDataFormat(infoList):
     '''
@@ -169,6 +172,30 @@ def loadIndexSentenceList():
 
     return sentenceList,sentenceFeatureList
 
+def getSetList(relationStr):
+
+    return list(set(relationStr.split('\t')))
+
+
+def getRelationWeight(sentence):
+
+    systemTime = time.time()
+
+    basicTime = systm.getTimeStampFromTimeStr('2016-12-30 12:00:00')
+
+    coldTime = systm.getTimeStampFromTimeStr('2017-1-1 12:00:00')
+
+    weight = 0.0
+
+    if sentence:
+        if 'INNER' in sentence:
+            timeStr = sentence.split('INNER')[0].strip()
+            articleTime = systm.getTimeStampFromTimeStr(timeStr)
+        else:
+            articleTime = coldTime
+
+        weight = (articleTime - basicTime) / (systemTime - basicTime)
+    return weight
 
 
 if __name__ == '__main__':
@@ -176,13 +203,45 @@ if __name__ == '__main__':
     ## 加载包含索引信息的句子到内存
     sentenceList,sentenceFeatureList = loadIndexSentenceList()
 
-    filePath = inout.getDataAnalysisPath('vote_classify_module_result_fnlp_150w-2100w.txt')
+    # for item in sentenceList:
+    #     print item
+    # exit(0)
+
+    inFilePath = inout.getDataAnalysisPath('vote_classify_module_result_fnlp_150w-2100w.txt')
+
+    outFilePath = inout.getDataAnalysisPath('vote_relation_weight_result_fnlp_150w-2000w.txt')
+
+    infoList = inout.readListFromTxt(inFilePath)
 
     ## 开始处理
-    fr = codecs.open(filePath,'rb')
-    while True:
-        line = fr.readline()
+    fw = codecs.open(outFilePath,'wb')
+
+    for i in tqdm(range(len(infoList))):
+        line = infoList[i]
         if line:
-            pass
-        else:
-            pass
+            line = line.strip()
+            entityPair = ''
+            relationSetStr = ''
+            weight = ''
+            sentenceIndex = ''
+
+            divSplitList = line.split('DIV')
+            #
+            entityPair = divSplitList[0]
+            innerSplitList = divSplitList[1].split('INNER')
+            #
+            relationStr = innerSplitList[0]
+            relationSetStr = getSetList(relationStr)
+            #
+            indexList = eval(innerSplitList[1])
+            sentenceIndex = indexList[0]
+            #
+            weigth = getRelationWeight(sentenceList[sentenceIndex])
+
+            outputLine = entityPair + 'DIV' + relationSetStr + 'INNER' + \
+                weigth + 'INNER' + sentenceIndex
+
+            fw.write(outputLine + '\n')
+
+
+    fw.close()

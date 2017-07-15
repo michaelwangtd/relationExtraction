@@ -6,17 +6,29 @@ from utils.inout import printEscapeStr
 from utils import inout
 from collections import OrderedDict
 import time
+from utils import systm
 
-startTime = time.time()
-print startTime
-print type(startTime)
-for i in range(10000000):
-    j = i+1
+print systm.getTimeStampFromTimeStr('2017-1-1 12:00:00')
 
-endTime = time.time()
-print endTime
-print 'end-start:'
-print endTime-startTime
+# timeStr = '2017-1-12 23:59:00'
+# re = systm.getTimeStampFromTimeStr(timeStr)
+# print type(re),re
+
+
+
+
+
+
+# startTime = time.time()
+# print startTime
+# print type(startTime)
+# for i in range(10000000):
+#     j = i+1
+#
+# endTime = time.time()
+# print endTime
+# print 'end-start:'
+# print endTime-startTime
 
 
 

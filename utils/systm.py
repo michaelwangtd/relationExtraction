@@ -7,6 +7,15 @@ import os
 """
     时间相关
 """
+def getTimeStampFromTimeStr(timeStr):
+    '''
+
+    '''
+    return time.mktime(time.strptime(timeStr,'%Y-%m-%d %H:%M:%S'))
+
+
+
+
 def getCurrentTimeStamp():
     '''
 
