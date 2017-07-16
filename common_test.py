@@ -8,7 +8,24 @@ from collections import OrderedDict
 import time
 from utils import systm
 
-print systm.getTimeStampFromTimeStr('2017-1-1 12:00:00')
+
+
+
+def getTimeStampFromTimeStr(timeStr):
+    '''
+
+    '''
+    return time.mktime(time.strptime(timeStr,'%Y-%m-%d %H:%M:%S'))
+
+
+
+
+print getTimeStampFromTimeStr('2016-12-30 12:00:00')
+
+
+
+
+# print systm.getTimeStampFromTimeStr('2017-1-1 12:00:00')
 
 # timeStr = '2017-1-12 23:59:00'
 # re = systm.getTimeStampFromTimeStr(timeStr)

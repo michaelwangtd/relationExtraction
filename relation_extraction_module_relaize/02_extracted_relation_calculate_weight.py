@@ -8,7 +8,7 @@
 
 from utils import inout
 import codecs
-from time import time
+import time
 from utils import systm
 from tqdm import tqdm
 
@@ -139,7 +139,8 @@ def loadIndexSentenceList():
 
     ## 1
     # fnlpListPath = inout.getDataNEMeatPath('sentence_and_feature_150w-900w_fnlp_old.txt')
-    fnlpListPath = inout.getDataTestPath('sentence_and_feature_test.txt')
+    # fnlpListPath = inout.getDataTestPath('sentence_and_feature_test.txt')
+    fnlpListPath = '/data/wangtd/workspace/re/data/sentence_and_feature_150w-900w_fnlp_old.txt'
 
     fnlpOldDataList = inout.readListFromTxt(fnlpListPath)
     print'原始-数据-旧 len:', len(fnlpOldDataList)
@@ -152,7 +153,8 @@ def loadIndexSentenceList():
 
     ## 2
     # fnlpNewDataListPath = inout.getDataNEMeatPath('sentence_and_feature_900w-2100w_fnlp_new.txt')
-    fnlpNewDataListPath = inout.getDataTestPath('sentence_and_feature_test_new.txt')
+    # fnlpNewDataListPath = inout.getDataTestPath('sentence_and_feature_test_new.txt')
+    fnlpNewDataListPath = '/data/wangtd/workspace/re/data/sentence_and_feature_900w-2100w_fnlp_new.txt'
 
     fnlpNewDataList = inout.readListFromTxt(fnlpNewDataListPath)
     print'原始-数据-新 len:', len(fnlpNewDataList)
@@ -189,7 +191,8 @@ def getRelationWeight(sentence):
 
     if sentence:
         if 'INNER' in sentence:
-            timeStr = sentence.split('INNER')[0].strip()
+            timeStr = sentence.split('#INNER#')[0].strip()
+            # print timeStr
             articleTime = systm.getTimeStampFromTimeStr(timeStr)
         else:
             articleTime = coldTime
@@ -201,15 +204,20 @@ def getRelationWeight(sentence):
 if __name__ == '__main__':
 
     ## 加载包含索引信息的句子到内存
-    sentenceList,sentenceFeatureList = loadIndexSentenceList()
+    # sentenceList,sentenceFeatureList = loadIndexSentenceList()
+
+    sentenceFilePath = inout.getDataAnalysisPath('sentenceList.txt')
+    sentenceList = inout.readListFromTxt(sentenceFilePath)
 
     # for item in sentenceList:
     #     print item
     # exit(0)
 
     inFilePath = inout.getDataAnalysisPath('vote_classify_module_result_fnlp_150w-2100w.txt')
+    # inFilePath = '/data/wangtd/workspace/re/vote_classify_module_result_fnlp_150w-2100w.txt'
 
     outFilePath = inout.getDataAnalysisPath('vote_relation_weight_result_fnlp_150w-2000w.txt')
+    # outFilePath = '/data/wangtd/workspace/re/vote_relation_weight_result_fnlp_150w-2000w.txt'
 
     infoList = inout.readListFromTxt(inFilePath)
 
@@ -231,7 +239,7 @@ if __name__ == '__main__':
             innerSplitList = divSplitList[1].split('INNER')
             #
             relationStr = innerSplitList[0]
-            relationSetStr = getSetList(relationStr)
+            relationSetStr = str(getSetList(relationStr))
             #
             indexList = eval(innerSplitList[1])
             sentenceIndex = indexList[0]
@@ -239,7 +247,7 @@ if __name__ == '__main__':
             weigth = getRelationWeight(sentenceList[sentenceIndex])
 
             outputLine = entityPair + 'DIV' + relationSetStr + 'INNER' + \
-                weigth + 'INNER' + sentenceIndex
+                str(weigth) + 'INNER' + str(sentenceIndex)
 
             fw.write(outputLine + '\n')
 
