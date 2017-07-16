@@ -10,17 +10,25 @@ from utils import systm
 
 
 
-
-def getTimeStampFromTimeStr(timeStr):
-    '''
-
-    '''
-    return time.mktime(time.strptime(timeStr,'%Y-%m-%d %H:%M:%S'))
+test = '\xef\xbc\x88\xe7\xba\xb3'
+print test.decode('utf-8')
 
 
 
 
-print getTimeStampFromTimeStr('2016-12-30 12:00:00')
+
+
+#
+# def getTimeStampFromTimeStr(timeStr):
+#     '''
+#
+#     '''
+#     return time.mktime(time.strptime(timeStr,'%Y-%m-%d %H:%M:%S'))
+#
+#
+#
+#
+# print getTimeStampFromTimeStr('2016-12-30 12:00:00')
 
 
 

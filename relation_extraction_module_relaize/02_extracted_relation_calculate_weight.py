@@ -187,13 +187,22 @@ def getRelationWeight(sentence):
 
     coldTime = systm.getTimeStampFromTimeStr('2017-1-1 12:00:00')
 
+    mildTime = systm.getTimeStampFromTimeStr('2017-4-1 12:00:00')
+
     weight = 0.0
 
     if sentence:
-        if 'INNER' in sentence:
-            timeStr = sentence.split('#INNER#')[0].strip()
-            # print timeStr
-            articleTime = systm.getTimeStampFromTimeStr(timeStr)
+        if '#INNER#' in sentence:
+            try:
+                timeStr = sentence.split('#INNER#')[0].strip()
+                # print timeStr
+                # print sentence
+                articleTime = systm.getTimeStampFromTimeStr(timeStr)
+            except:
+                print sentence
+                articleTime = mildTime
+            # finally:
+            #     articleTime = mildTime
         else:
             articleTime = coldTime
 
@@ -234,22 +243,25 @@ if __name__ == '__main__':
             sentenceIndex = ''
 
             divSplitList = line.split('DIV')
-            #
-            entityPair = divSplitList[0]
-            innerSplitList = divSplitList[1].split('INNER')
-            #
-            relationStr = innerSplitList[0]
-            relationSetStr = str(getSetList(relationStr))
-            #
-            indexList = eval(innerSplitList[1])
-            sentenceIndex = indexList[0]
-            #
-            weigth = getRelationWeight(sentenceList[sentenceIndex])
+            if len(divSplitList) == 2:
+                #
+                entityPair = divSplitList[0]
+                innerSplitList = divSplitList[1].split('INNER')
+                if len(innerSplitList) == 2:
+                    #
+                    relationStr = innerSplitList[0]
+                    relationSetStr = ' '.join(getSetList(relationStr))
+                    #
+                    # print innerSplitList
+                    indexList = eval(innerSplitList[1])
+                    sentenceIndex = indexList[0]
+                    #
+                    weigth = getRelationWeight(sentenceList[sentenceIndex])
 
-            outputLine = entityPair + 'DIV' + relationSetStr + 'INNER' + \
-                str(weigth) + 'INNER' + str(sentenceIndex)
+                    outputLine = entityPair + 'DIV' + relationSetStr + 'INNER' + \
+                        str(weigth) + 'INNER' + str(sentenceIndex)
 
-            fw.write(outputLine + '\n')
+                    fw.write(outputLine + '\n')
 
 
     fw.close()
