@@ -7,11 +7,52 @@ from utils import inout
 from collections import OrderedDict
 import time
 from utils import systm
+import uuid
+import hashlib
+import operator
 
 
 
-test = '\xef\xbc\x88\xe7\xba\xb3'
-print test.decode('utf-8')
+
+dic = dict()
+dic['宋喆'] = 5
+dic['马蓉'] = 9
+dic['王宝庆'] = 2
+
+orderedItemsList = sorted(dic.items(),key=lambda item:item[1],reverse=True)
+# print type(orderedItemsList),orderedItemsList
+
+
+
+
+
+# name1 = '李自成'
+# name2 = '魏藻德'
+
+
+
+# re1 = hashlib.md5(name1).hexdigest()
+# print type(re1),re1
+# re2 = hashlib.sha1(name2).hexdigest()
+# print type(re2),re2
+
+
+
+# re1 = uuid.uuid3(uuid.NAMESPACE_DNS,name1)
+# print type(re1),re1
+# re2 = uuid.uuid3(uuid.NAMESPACE_DNS,name2)
+# print type(re2),re2
+#
+# re = str(re1) + str(re2)
+# print type(re),re
+
+
+
+
+
+
+# test = '\xe8\x89\xbe\xe5\x8a\x9b\xc2\xb7\xe4\xbe\x9d\xe6\x98\x8e'
+# print test.decode('utf-8')
 
 
 
