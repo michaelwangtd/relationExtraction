@@ -37,7 +37,7 @@ def getSortedRelationWeightStr(tupleList):
     outputStr = '['
     for item in tupleList:
         outputStr = outputStr + '(' + item[0] + ',' + str(item[1]) + ')'
-        outputStr = outputStr + ']'
+    outputStr = outputStr + ']'
     return outputStr
 
 
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     for i in tqdm(range(len(neSetList))):
         nePairStr = neSetList[i]
         # print nePairStr
-        classifyDic[nePairStr] = [list(),list()]
+        classifyDic[nePairStr] = [[],[]]
         sentenceLenDic[nePairStr] = 0
 
     # print len(dic.keys())
@@ -126,8 +126,11 @@ if __name__ == '__main__':
                         classifyDic[neStrReverse][0].extend(relationAndWeightTupleList)
                         classifyDic[neStrReverse][1].append(sentenceIndex)
 
+    print 'classifyDic len:',len(classifyDic.keys())
+
     for k,v in classifyDic.items():
-        sentenceLenDic[k] = len(v[1])
+        sentenceIndexTempList = list(set(v[1]))
+        sentenceLenDic[k] = len(sentenceIndexTempList)
 
     sentenceLenItemsOrderedList = sorted(sentenceLenDic.items(),key=lambda item:item[1],reverse=True)
 
@@ -138,6 +141,11 @@ if __name__ == '__main__':
         outputDic[tupleItem[0]] = classifyDic[tupleItem[0]]
 
 
+    # print 'outputDic:',len(outputDic.keys())
+    # for k,v in outputDic.items():
+    #     print k
+    #     inout.printEscapeStr(v)
+    # exit(0)
 
     print '输出：'
     fw = codecs.open(outFilePath,'wb')
@@ -148,6 +156,7 @@ if __name__ == '__main__':
         relationAndWeightTempList = outputDic[key][0]
         sentenceIndexList = outputDic[key][1]
         sentenceIndexList = list(set(sentenceIndexList))
+
 
         relationWeightList = getRelationWeightList(relationAndWeightTempList)
         sortedRelationWeightList = sorted(relationWeightList,key = lambda item : item[1],reverse=True)
@@ -179,8 +188,10 @@ if __name__ == '__main__':
 
 
     """
-    因字典扩展问题，导致在大任务量时执行速度特别慢
-    
+        重新启用这个代码
+    """
+
+    """
     classifyDic = dict()
 
     print '归类：'

@@ -10,16 +10,29 @@ from utils import systm
 import uuid
 import hashlib
 import operator
+import jieba
 
 
 
 
-dic = dict()
-dic['宋喆'] = 5
-dic['马蓉'] = 9
-dic['王宝庆'] = 2
+testStr = """
+千年前两晋时期温婉现世，穿越南宋风雅，燃起窑焰竟日夜的传奇，自明代后逐渐淡出视野；1957年，龙泉青瓷于历史中蒙尘数\
+百年后，在周总理的指示下恢复生产，并于2009年，入选联合国教科文组织所设《人类非物质文化遗产代表作名录》，成为唯一入选的陶瓷类项目。"""
 
-orderedItemsList = sorted(dic.items(),key=lambda item:item[1],reverse=True)
+testStr = """哈佛大学研究表明，左撇子的女性患多发性硬化的风险要比习惯用右手者高62%"""
+
+re = ' '.join(jieba.cut(testStr))
+print re
+
+
+
+
+# dic = dict()
+# dic['宋喆'] = 5
+# dic['马蓉'] = 9
+# dic['王宝庆'] = 2
+#
+# orderedItemsList = sorted(dic.items(),key=lambda item:item[1],reverse=True)
 # print type(orderedItemsList),orderedItemsList
 
 
