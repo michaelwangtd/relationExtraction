@@ -11,18 +11,50 @@ import uuid
 import hashlib
 import operator
 import jieba
+from tqdm import tqdm
 
 
 
 
-testStr = """
-千年前两晋时期温婉现世，穿越南宋风雅，燃起窑焰竟日夜的传奇，自明代后逐渐淡出视野；1957年，龙泉青瓷于历史中蒙尘数\
-百年后，在周总理的指示下恢复生产，并于2009年，入选联合国教科文组织所设《人类非物质文化遗产代表作名录》，成为唯一入选的陶瓷类项目。"""
 
-testStr = """哈佛大学研究表明，左撇子的女性患多发性硬化的风险要比习惯用右手者高62%"""
 
-re = ' '.join(jieba.cut(testStr))
-print re
+# testStr = """
+# 千年前两晋时期温婉现世，穿越南宋风雅，燃起窑焰竟日夜的传奇，自明代后逐渐淡出视野；1957年，龙泉青瓷于历史中蒙尘数\
+# 百年后，在周总理的指示下恢复生产，并于2009年，入选联合国教科文组织所设《人类非物质文化遗产代表作名录》，成为唯一入选的陶瓷类项目。"""
+#
+# testStr = """哈佛大学研究表明，左撇子的女性患多发性硬化的风险要比习惯用右手者高62%"""
+#
+# re = ' '.join(jieba.cut(testStr))
+# print re
+
+
+
+
+
+endNum = 700000
+initDic = dict()
+findList = []
+for i in tqdm(range(endNum)):
+    initDic[i] = [i]
+    findList.append(i)
+
+
+startTime = time.time()
+
+# findNum = 400000
+# for item in findList:
+for i in tqdm(range(len(findList))):
+    item = findList[i]
+    if item in initDic.keys():
+        # print initDic[item][0]
+        pass
+
+endTime = time.time()
+
+print endTime-startTime
+
+
+
 
 
 
