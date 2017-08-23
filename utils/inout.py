@@ -205,7 +205,6 @@ def onlyReadLine(filePath):
             return line.strip()
 
 
-
 def liststr2listlist(liststr):
     resultList = []
     for item in liststr:
